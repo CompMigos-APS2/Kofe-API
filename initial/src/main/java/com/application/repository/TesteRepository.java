@@ -29,7 +29,7 @@ public interface TesteRepository extends PagingAndSortingRepository<Teste, Long>
      * @return cliente do id passado como parâmetro.
      */
     @Query("SELECT c.nome FROM Teste c where c.id = :id")
-    Teste findNomeById(@Param("id") Long id);
+    Teste findNomeById(@Param("id") Integer id);
 
     /**
      * Método que retorna uma lista de clientes fazendo a busca pelo nome passado

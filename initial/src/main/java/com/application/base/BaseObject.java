@@ -2,9 +2,13 @@ package com.application.base;
 
 import java.util.UUID;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+@Entity
 public class BaseObject {
-    public UUID internalId;
+    @Id
+    public UUID id;
     public BaseObject(){
-        internalId = UUID.randomUUID();
+        id = UUID.randomUUID();
     }
 }

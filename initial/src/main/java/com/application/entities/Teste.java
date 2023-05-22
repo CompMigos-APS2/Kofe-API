@@ -1,7 +1,5 @@
 package com.application.entities;
 
-import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,16 +11,16 @@ public class Teste {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long id;
+    private Integer id;
 
     private String nome;
+    private String cpf;
 
-
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -32,6 +30,14 @@ public class Teste {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String nome) {
+        this.cpf = cpf;
     }
 
 

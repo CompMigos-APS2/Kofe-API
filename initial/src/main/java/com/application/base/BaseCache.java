@@ -12,7 +12,7 @@ public class BaseCache<T extends BaseObject> {
         return cache.get(id);
     }
     public void UnsafelyInsert(T obj){
-        cache.put(obj.internalId, obj);
+        cache.put(obj.id, obj);
     }
 
     public Collection<T> GetAll(){
@@ -20,9 +20,9 @@ public class BaseCache<T extends BaseObject> {
     }
 
     public boolean TryInsert(T obj){
-        if(cache.get(obj.internalId) == null) return false;
+        if(cache.get(obj.id) == null) return false;
 
-        cache.put(obj.internalId, obj);
+        cache.put(obj.id, obj);
         return true;
     }
 }
