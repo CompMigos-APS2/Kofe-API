@@ -1,6 +1,7 @@
 package com.application.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,5 +15,6 @@ import com.application.entities.Coffee;
 public interface CoffeeRepository extends JpaRepository<Coffee, UUID> {
 
     List<Coffee> findByName(@Param("name") String name);
-    UUID deleteByName(String name);
+
+    //Todo: implementar delete e update, provavelmente com entityManager
 }
