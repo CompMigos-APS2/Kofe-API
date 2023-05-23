@@ -1,7 +1,5 @@
 package com.application.entities;
 
-import com.application.base.BaseObject;
-
 import jakarta.persistence.Id;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
