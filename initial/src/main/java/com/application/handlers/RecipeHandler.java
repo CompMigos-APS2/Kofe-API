@@ -39,7 +39,6 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
 
         // Salvar o objeto Recipe
         Recipe savedRecipe = repository.save(obj);
-        System.out.println(coffeeIds.size());
         // Atualizar a associação entre Recipe e Coffee
         for (UUID coffeeId : coffeeIds) {
             repository.insertRecipeCoffee(savedRecipe.getId(), coffeeId);

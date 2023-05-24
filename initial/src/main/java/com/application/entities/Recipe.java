@@ -131,10 +131,7 @@ public class Recipe {
 
     public List<UUID> getCoffeeIds() {
         List<UUID> coffeeIds = new ArrayList<>();
-        System.out.println(coffeeStringIds);
-        System.out.println(coffeeStringIds.size());
         for (String coffeeString : coffeeStringIds) {
-            System.out.println(coffeeString);
             UUID formattedId = UUID.fromString(coffeeString);
             coffeeIds.add(formattedId);
         }
