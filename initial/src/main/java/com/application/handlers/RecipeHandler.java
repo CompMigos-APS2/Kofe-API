@@ -2,9 +2,8 @@ package com.application.handlers;
 
 import com.application.entities.Coffee;
 import com.application.entities.Recipe;
-import com.application.entities.RecipeCoffee;
 import com.application.repository.CoffeeRepository;
-import com.application.repository.RecipeCoffeeRepository;
+
 import com.application.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
