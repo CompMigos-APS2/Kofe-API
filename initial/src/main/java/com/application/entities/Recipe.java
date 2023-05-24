@@ -23,7 +23,7 @@ public class Recipe {
     private Date date;
     private float rating;
     private List<String> commentsList;
-
+    private List<String> coffeeStringIds = new ArrayList<>();
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "recipe_coffee",
@@ -104,6 +104,14 @@ public class Recipe {
         this.commentsList = commentsList;
     }
 
+    public List<String> getCoffeeStringIds() {
+        return coffeeStringIds;
+    }
+
+    public void setCoffeeStringIds(List<String> coffeeStringIds) {
+        this.coffeeStringIds = coffeeStringIds;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -120,10 +128,15 @@ public class Recipe {
         this.coffeeUsed = coffeeUsed;
     }
 
+
     public List<UUID> getCoffeeIds() {
         List<UUID> coffeeIds = new ArrayList<>();
-        for (Coffee coffee : coffeeUsed) {
-            coffeeIds.add(coffee.getId());
+        System.out.println(coffeeStringIds);
+        System.out.println(coffeeStringIds.size());
+        for (String coffeeString : coffeeStringIds) {
+            System.out.println(coffeeString);
+            UUID formattedId = UUID.fromString(coffeeString);
+            coffeeIds.add(formattedId);
         }
         return coffeeIds;
     }
