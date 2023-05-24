@@ -1,18 +1,20 @@
 package com.application.entities;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.sql.Time;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+
+@Entity
 
 public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+
+    @Column(name="r_id")
     private UUID id;
+
+    private String title;
     private String extractionMethod;
     private int coffeeQty;
     private int waterQty;
@@ -21,6 +23,14 @@ public class Recipe {
     private Date date;
     private float rating;
     private List<String> commentsList;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "recipe_coffee",
+            joinColumns = @JoinColumn(name = "recipe_id"),
+            inverseJoinColumns = @JoinColumn(name = "coffee_id")
+    )
+    private Set<Coffee> coffeeUsed = new HashSet<>();
 
     public Recipe() {
         id = UUID.randomUUID();
@@ -92,5 +102,29 @@ public class Recipe {
 
     public void setCommentsList(List<String> commentsList) {
         this.commentsList = commentsList;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Set<Coffee> getCoffeeUsed() {
+        return coffeeUsed;
+    }
+
+    public void setCoffeeUsed(Set<Coffee> coffeeUsed) {
+        this.coffeeUsed = coffeeUsed;
+    }
+
+    public List<UUID> getCoffeeIds() {
+        List<UUID> coffeeIds = new ArrayList<>();
+        for (Coffee coffee : coffeeUsed) {
+            coffeeIds.add(coffee.getId());
+        }
+        return coffeeIds;
     }
 }

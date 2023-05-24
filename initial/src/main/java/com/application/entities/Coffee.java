@@ -1,19 +1,16 @@
 package com.application.entities;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 
 
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 
 @Entity
 public class Coffee {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name="c_id")
     private UUID id;
     private String name;
     private Date roastDate;
@@ -23,6 +20,9 @@ public class Coffee {
     private String specie;
     private String method;
     private String color; //TODO: implementar restrição de domínio
+
+    @ManyToMany(mappedBy = "coffeeUsed")
+    private Set<Recipe> recipes = new HashSet<Recipe>();
 
     public Coffee(){
         id = UUID.randomUUID();
