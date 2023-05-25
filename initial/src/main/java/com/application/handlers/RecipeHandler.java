@@ -51,4 +51,9 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
         // Salvar o objeto Recipe
         return new ResponseEntity<>(savedRecipe, HttpStatus.CREATED);
     }
+
+//    @RequestMapping("/{recipeId}/coffees/{coffeeId}")
+//    public ResponseEntity<HttpStatus> deleteCoffee(@RequestBody Coffee coffee) {
+//        if(removeCoffeeUsed())
+//    }
 }

@@ -132,6 +132,10 @@ public class Recipe {
         coffeeUsed.add(coffeeToAdd);
     }
 
+    public boolean removeCoffeeUsed(Coffee coffeeToRemove) {
+        return coffeeUsed.remove(coffeeToRemove);
+    }
+
     public List<UUID> getCoffeeIds() {
         List<UUID> coffeeIds = new ArrayList<>();
         for (String coffeeString : coffeeStringIds) {

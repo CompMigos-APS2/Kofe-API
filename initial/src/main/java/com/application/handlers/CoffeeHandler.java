@@ -2,7 +2,9 @@ package com.application.handlers;
 
 import com.application.entities.Coffee;
 import com.application.repository.CoffeeRepository;
+import jakarta.persistence.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,18 @@ public class CoffeeHandler extends GenericHandler<Coffee, CoffeeRepository> {
     @RequestMapping("/getByName")
     public ResponseEntity<List<Coffee>> getByName(String name){
         return new ResponseEntity<>(repository.findByName(name), HttpStatus.OK);
+    }
+
+    @RequestMapping("/deleteCoffeeById")
+    public ResponseEntity<List<Object>> deleteCoffeeById(String id) {
+
+        UUID formattedId = UUID.fromString(id);
+        List<Object> recipeList = repository.findRecipesWithCoffee(formattedId);
+        if(recipeList.size() == 0) {
+            repository.deleteById(formattedId);
+            return new ResponseEntity<>(recipeList, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(recipeList, HttpStatus.CONFLICT);
     }
 
 }

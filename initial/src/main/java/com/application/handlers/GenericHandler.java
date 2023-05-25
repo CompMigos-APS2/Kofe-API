@@ -1,5 +1,6 @@
 package com.application.handlers;
 
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
@@ -31,14 +32,15 @@ public class GenericHandler<T, TRepository extends JpaRepository<T, UUID>>{
     }
 
     @RequestMapping("/getById")
-    public Optional<T> getById(String id){
+    public ResponseEntity<Optional<T>> getById(String id){
         UUID formattedId = UUID.fromString(id);
-        return repository.findById(formattedId);
+        return new ResponseEntity<>(repository.findById(formattedId), HttpStatus.OK);
     }
 
     @RequestMapping("/deleteById")
-    public void deleteById(String id){
+    public ResponseEntity<HttpStatus> deleteById(String id){
         UUID formattedId = UUID.fromString(id);
         repository.deleteById(formattedId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
