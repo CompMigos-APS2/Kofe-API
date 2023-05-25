@@ -21,8 +21,8 @@ public class GenericHandler<T, TRepository extends JpaRepository<T, UUID>>{
         this.repository = repository;
     }
     @RequestMapping("/get")
-    public List<T> get(){
-        return repository.findAll();
+    public ResponseEntity<List<T>> get(){
+        return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
     }
 
     @PostMapping("/save")

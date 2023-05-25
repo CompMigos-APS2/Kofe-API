@@ -31,8 +31,8 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
         super(repository);
     }
     @RequestMapping("/getByTitle")
-    public List<Recipe> getByTitle(String title){
-        return repository.findByTitle(title);
+    public ResponseEntity<List<Recipe>> getByTitle(String title){
+        return new ResponseEntity<>(repository.findByTitle(title), HttpStatus.OK);
     }
 
     @Autowired
