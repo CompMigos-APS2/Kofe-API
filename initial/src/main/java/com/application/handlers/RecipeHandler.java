@@ -8,6 +8,8 @@ import com.application.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,7 +38,7 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
     @Autowired
     private CoffeeRepository coffeeRepository;
     @PostMapping("/save")
-    public void save(@RequestBody Recipe obj) {
+    public ResponseEntity<Recipe> save(@RequestBody Recipe obj) {
         // Obter os IDs dos objetos Coffee relacionados
         List<String> coffeeStringIds = obj.getCoffeeStringIds();
         for(String coffeeStringId : coffeeStringIds) {
@@ -47,6 +49,6 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
         }
         Recipe savedRecipe = repository.save(obj);
         // Salvar o objeto Recipe
+        return new ResponseEntity<>(savedRecipe, HttpStatus.CREATED);
     }
-
 }

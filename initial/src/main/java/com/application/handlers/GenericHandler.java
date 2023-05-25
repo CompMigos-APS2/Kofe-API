@@ -2,6 +2,8 @@ package com.application.handlers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,8 +26,8 @@ public class GenericHandler<T, TRepository extends JpaRepository<T, UUID>>{
     }
 
     @PostMapping("/save")
-    public void save(@RequestBody T obj){
-        repository.save(obj);
+    public ResponseEntity<T> save(@RequestBody T obj){
+        return new ResponseEntity<>(repository.save(obj), HttpStatus.CREATED);
     }
 
     @RequestMapping("/getById")
@@ -39,5 +41,4 @@ public class GenericHandler<T, TRepository extends JpaRepository<T, UUID>>{
         UUID formattedId = UUID.fromString(id);
         repository.deleteById(formattedId);
     }
-
 }
