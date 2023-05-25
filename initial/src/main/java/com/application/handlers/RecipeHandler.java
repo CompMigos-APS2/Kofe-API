@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.swing.text.html.Option;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -31,18 +33,20 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
         return repository.findByTitle(title);
     }
 
-
+    @Autowired
+    private CoffeeRepository coffeeRepository;
     @PostMapping("/save")
     public void save(@RequestBody Recipe obj) {
         // Obter os IDs dos objetos Coffee relacionados
-        List<UUID> coffeeIds = obj.getCoffeeIds();
-
-        // Salvar o objeto Recipe
-        Recipe savedRecipe = repository.save(obj);
-        // Atualizar a associação entre Recipe e Coffee
-        for (UUID coffeeId : coffeeIds) {
-            repository.insertRecipeCoffee(savedRecipe.getId(), coffeeId);
+        List<String> coffeeStringIds = obj.getCoffeeStringIds();
+        for(String coffeeStringId : coffeeStringIds) {
+            Optional<Coffee> coffee = coffeeRepository.findById(UUID.fromString(coffeeStringId));
+            if(coffee.isEmpty())
+                continue;
+            obj.addCoffeeUsed(coffee.get());
         }
+        Recipe savedRecipe = repository.save(obj);
+        // Salvar o objeto Recipe
     }
 
 }

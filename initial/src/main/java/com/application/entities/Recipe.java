@@ -128,6 +128,9 @@ public class Recipe {
         this.coffeeUsed = coffeeUsed;
     }
 
+    public void addCoffeeUsed(Coffee coffeeToAdd) {
+        coffeeUsed.add(coffeeToAdd);
+    }
 
     public List<UUID> getCoffeeIds() {
         List<UUID> coffeeIds = new ArrayList<>();
