@@ -1,10 +1,7 @@
 package com.application.entities;
 
 import jakarta.persistence.*;
-
-
 import java.util.*;
-
 
 @Entity
 public class Coffee {
