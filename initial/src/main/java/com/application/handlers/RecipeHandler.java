@@ -1,9 +1,11 @@
 package com.application.handlers;
 
 import com.application.entities.Coffee;
+import com.application.entities.Equipment;
 import com.application.entities.Recipe;
 import com.application.repository.CoffeeRepository;
 
+import com.application.repository.EquipmentRepository;
 import com.application.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,6 +34,8 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
 
     @Autowired
     private CoffeeRepository coffeeRepository;
+    @Autowired
+    private EquipmentRepository equipmentRepository;
     @PostMapping("/save")
     public ResponseEntity<Recipe> save(@RequestBody Recipe obj) {
         List<String> coffeeStringIds = obj.getCoffeeStringIds();
@@ -40,6 +44,13 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
             if(coffee.isEmpty())
                 continue;
             obj.addCoffeeUsed(coffee.get());
+        }
+        List<String> equipmentStringIds = obj.getEquipmentStringIds();
+        for(String equipmentStringId : equipmentStringIds) {
+            Optional<Equipment> equipment = equipmentRepository.findById(UUID.fromString(equipmentStringId));
+            if(equipment.isEmpty())
+                continue;
+            obj.addEquipmentUsed(equipment.get());
         }
         Recipe savedRecipe = repository.save(obj);
         return new ResponseEntity<>(savedRecipe, HttpStatus.CREATED);

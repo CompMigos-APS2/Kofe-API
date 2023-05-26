@@ -21,4 +21,9 @@ public interface RecipeRepository extends JpaRepository<Recipe, UUID> {
     @Query(value = "INSERT INTO recipe_coffee (recipe_id, coffee_id) VALUES (:recipeId, :coffeeId)", nativeQuery = true)
     void insertRecipeCoffee(@Param("recipeId") UUID recipeId, @Param("coffeeId") UUID coffeeId);
 
+    @Transactional
+    @Modifying
+    @Query(value = "INSERT INTO recipe_equipment (recipe_id, equipment_id) VALUES (:recipeId, :equipmentId)", nativeQuery = true)
+    void insertRecipeEquipment(@Param("recipeId") UUID recipeId, @Param("equipmentId") UUID equipmentId);
+
 }

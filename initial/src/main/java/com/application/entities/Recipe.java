@@ -31,6 +31,15 @@ public class Recipe {
             inverseJoinColumns = @JoinColumn(name = "coffee_id")
     )
     private Set<Coffee> coffeeUsed = new HashSet<>();
+    private List<String> equipmentStringIds = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "recipe_equipment",
+            joinColumns = @JoinColumn(name = "recipe_id"),
+            inverseJoinColumns = @JoinColumn(name = "equipment_id")
+    )
+    private Set<Equipment> equipmentUsed = new HashSet<>();
 
     public Recipe() {
         id = UUID.randomUUID();
@@ -128,6 +137,22 @@ public class Recipe {
         this.coffeeUsed = coffeeUsed;
     }
 
+    public List<String> getEquipmentStringIds() {
+        return equipmentStringIds;
+    }
+
+    public void setEquipmentStringIds(List<String> equipmentStringIds) {
+        this.equipmentStringIds = equipmentStringIds;
+    }
+
+    public Set<Equipment> getEquipmentUsed() {
+        return equipmentUsed;
+    }
+
+    public void setEquipmentUsed(Set<Equipment> equipmentUsed) {
+        this.equipmentUsed = equipmentUsed;
+    }
+
     public void addCoffeeUsed(Coffee coffeeToAdd) {
         coffeeUsed.add(coffeeToAdd);
     }
@@ -143,5 +168,20 @@ public class Recipe {
             coffeeIds.add(formattedId);
         }
         return coffeeIds;
+    }
+
+    public List<UUID> getEquipmentIds() {
+        List<UUID> equipmentIds = new ArrayList<>();
+        for (String equipmentString : equipmentStringIds) { //TODO:remover código repetido
+            UUID formattedId = UUID.fromString(equipmentString);
+            equipmentIds.add(formattedId);
+        }
+        return equipmentIds;
+    }
+    public void addEquipmentUsed(Equipment equipmentToAdd) {
+        equipmentUsed.add(equipmentToAdd);
+    }
+    public boolean removeEquipmentUsed(Equipment equipmentToRemove) {
+        return equipmentUsed.remove(equipmentToRemove);
     }
 }
