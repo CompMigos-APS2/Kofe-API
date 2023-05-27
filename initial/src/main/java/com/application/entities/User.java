@@ -1,16 +1,16 @@
 package com.application.entities;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
+@Entity
+@Table(name="\"user\"")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="u_id")
     private UUID id;
     private String name;
     private String email;
@@ -19,15 +19,19 @@ public class User {
     private Date birthDate;
     private String address;
 
-    private List<Coffee> coffeeList;
-    private List<Recipe> recipeList;
-    private List<Equipment> equipmentList;
-    public User() {
-        id = UUID.randomUUID();
-    }
-
+    @OneToMany(mappedBy="user")
+    @JsonIgnore
+    private Set<Coffee> coffee = new HashSet<>();
+//    private List<Recipe> recipeList;
+//    private List<Equipment> equipmentList;
+    public User(){
+    id = UUID.randomUUID();
+}
     public UUID getId() {
         return id;
+    }
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -78,27 +82,11 @@ public class User {
         this.address = address;
     }
 
-    public List<Coffee> getCoffeeList() {
-        return coffeeList;
+    public Set<Coffee> getCoffee() {
+        return coffee;
     }
 
-    public void setCoffeeList(List<Coffee> coffeeList) {
-        this.coffeeList = coffeeList;
-    }
-
-    public List<Recipe> getRecipeList() {
-        return recipeList;
-    }
-
-    public void setRecipeList(List<Recipe> recipeList) {
-        this.recipeList = recipeList;
-    }
-
-    public List<Equipment> getEquipmentList() {
-        return equipmentList;
-    }
-
-    public void setEquipmentList(List<Equipment> equipmentList) {
-        this.equipmentList = equipmentList;
+    public void setCoffee(Set<Coffee> coffee) {
+        this.coffee = coffee;
     }
 }

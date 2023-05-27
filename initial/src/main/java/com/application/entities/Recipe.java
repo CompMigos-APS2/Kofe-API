@@ -22,6 +22,8 @@ public class Recipe {
     private String preparationMethod;
     private Date date;
     private float rating;
+
+    //TODO:add creationDate
     private List<String> commentsList;
     private List<String> coffeeStringIds = new ArrayList<>();
     @ManyToMany(fetch = FetchType.LAZY)

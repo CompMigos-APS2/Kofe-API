@@ -18,8 +18,14 @@ public class Coffee {
     private String method;
     private String color; //TODO: implementar restrição de domínio
 
+    //TODO:add creationDate
+
     @ManyToMany(mappedBy = "coffeeUsed")
     private Set<Recipe> recipes = new HashSet<Recipe>();
+
+    @ManyToOne
+    @JoinColumn(name="u_id", nullable=false)
+    private User user;
 
     public Coffee(){
         id = UUID.randomUUID();
@@ -95,5 +101,12 @@ public class Coffee {
         this.color = color;
     }
 
+    public User getUser() {
+        return user;
+    }
 
+    public void setUser(User user) {
+        this.user = user;
+        user.getCoffee().add(this);
+    }
 }
