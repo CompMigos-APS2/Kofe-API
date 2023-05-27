@@ -13,7 +13,6 @@ public class Recipe {
 
     @Column(name="r_id")
     private UUID id;
-
     private String title;
     private String extractionMethod;
     private int coffeeQty;
@@ -42,6 +41,10 @@ public class Recipe {
             inverseJoinColumns = @JoinColumn(name = "equipment_id")
     )
     private Set<Equipment> equipmentUsed = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name="u_id", nullable=false)
+    private User user;
 
     public Recipe() {
         id = UUID.randomUUID();
@@ -185,5 +188,13 @@ public class Recipe {
     }
     public boolean removeEquipmentUsed(Equipment equipmentToRemove) {
         return equipmentUsed.remove(equipmentToRemove);
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

@@ -22,7 +22,11 @@ public class User {
     @OneToMany(mappedBy="user")
     @JsonIgnore
     private Set<Coffee> coffee = new HashSet<>();
-//    private List<Recipe> recipeList;
+
+    @OneToMany(mappedBy="user")
+    @JsonIgnore
+    private Set<Recipe> recipe = new HashSet<>();
+
 //    private List<Equipment> equipmentList;
     public User(){
     id = UUID.randomUUID();
@@ -88,5 +92,13 @@ public class User {
 
     public void setCoffee(Set<Coffee> coffee) {
         this.coffee = coffee;
+    }
+
+    public Set<Recipe> getRecipe() {
+        return recipe;
+    }
+
+    public void setRecipe(Set<Recipe> recipe) {
+        this.recipe = recipe;
     }
 }
