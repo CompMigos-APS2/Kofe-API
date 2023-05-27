@@ -28,16 +28,4 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
         return new ResponseEntity<>(repository.login(email, password), HttpStatus.OK);
     }
 
-//    @RequestMapping("/deleteCoffeeById")
-//    public ResponseEntity<List<Object>> deleteCoffeeById(String id) {
-//
-//        UUID formattedId = UUID.fromString(id);
-//        List<Object> recipeList = repository.findRecipesWithCoffee(formattedId);
-//        if(recipeList.size() == 0) {
-//            repository.deleteById(formattedId);
-//            return new ResponseEntity<>(recipeList, HttpStatus.NO_CONTENT);
-//        }
-//        return new ResponseEntity<>(recipeList, HttpStatus.CONFLICT);
-//    }
-
 }

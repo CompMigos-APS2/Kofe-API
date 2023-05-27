@@ -16,6 +16,4 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("SELECT u FROM User u WHERE u.email = :email AND u.password = :password")
     User login(@Param("email") String email, @Param("password") String password);
 
-//    @Query(value = "SELECT r.title, r.r_id FROM recipe_coffee rc INNER JOIN Recipe r ON rc.recipe_id = r.r_id WHERE rc.coffee_id = :coffee_id", nativeQuery = true)
-//    List<Object> findRecipesWithCoffee(@Param("coffee_id") UUID coffee_id);
 }
