@@ -3,10 +3,12 @@ package com.application.handlers;
 import com.application.entities.Coffee;
 import com.application.entities.Equipment;
 import com.application.entities.Recipe;
+import com.application.entities.User;
 import com.application.repository.CoffeeRepository;
 
 import com.application.repository.EquipmentRepository;
 import com.application.repository.RecipeRepository;
+import com.application.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,12 @@ import java.util.UUID;
 
 public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
     @Autowired
+    private CoffeeRepository coffeeRepository;
+    @Autowired
+    private EquipmentRepository equipmentRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
     public RecipeHandler(RecipeRepository repository) {
         super(repository);
     }
@@ -32,12 +40,12 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
         return new ResponseEntity<>(repository.findByTitle(title), HttpStatus.OK);
     }
 
-    @Autowired
-    private CoffeeRepository coffeeRepository;
-    @Autowired
-    private EquipmentRepository equipmentRepository;
     @PostMapping("/save")
     public ResponseEntity<Recipe> save(@RequestBody Recipe obj) {
+        String userStringId = obj.getUserId();
+        Optional<User> user = userRepository.findById(UUID.fromString(userStringId));
+        obj.setUser(user.get());
+
         List<String> coffeeStringIds = obj.getCoffeeStringIds();
         for(String coffeeStringId : coffeeStringIds) {
             Optional<Coffee> coffee = coffeeRepository.findById(UUID.fromString(coffeeStringId));
@@ -55,5 +63,4 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
         Recipe savedRecipe = repository.save(obj);
         return new ResponseEntity<>(savedRecipe, HttpStatus.CREATED);
     }
-
 }
