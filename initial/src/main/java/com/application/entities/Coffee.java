@@ -1,19 +1,15 @@
 package com.application.entities;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 
-
-import java.util.Date;
-import java.util.UUID;
-
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Entity
 public class Coffee {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name="c_id")
     private UUID id;
     private String name;
     private Date roastDate;
@@ -23,6 +19,15 @@ public class Coffee {
     private String specie;
     private String method;
     private String color; //TODO: implementar restrição de domínio
+
+    @ManyToMany(mappedBy = "coffeeUsed")
+    private Set<Recipe> recipes = new HashSet<Recipe>();
+
+    @ManyToOne
+    @JoinColumn(name="u_id", nullable=false)
+    private User user;
+
+    private LocalDateTime modificationDateTime = LocalDateTime.now();
 
     public Coffee(){
         id = UUID.randomUUID();
@@ -98,5 +103,20 @@ public class Coffee {
         this.color = color;
     }
 
+    public User getUser() {
+        return user;
+    }
 
+    public void setUser(User user) {
+        this.user = user;
+        user.getCoffee().add(this);
+    }
+
+    public LocalDateTime getModificationDateTime() {
+        return modificationDateTime;
+    }
+
+    public void setModificationDateTime(LocalDateTime modificationDateTime) {
+        this.modificationDateTime = modificationDateTime;
+    }
 }

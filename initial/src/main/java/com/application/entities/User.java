@@ -1,16 +1,17 @@
 package com.application.entities;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import ch.qos.logback.core.encoder.ByteArrayUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
+@Entity
+@Table(name="\"user\"")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="u_id")
     private UUID id;
     private String name;
     private String email;
@@ -18,16 +19,32 @@ public class User {
     private String password;
     private Date birthDate;
     private String address;
+    private List<String> equipmentStringIds = new ArrayList<>();
 
-    private List<Coffee> coffeeList;
-    private List<Recipe> recipeList;
-    private List<Equipment> equipmentList;
-    public User() {
-        id = UUID.randomUUID();
-    }
+    @OneToMany(mappedBy="user")
+    @JsonIgnore
+    private Set<Coffee> coffee = new HashSet<>();
 
+    @OneToMany(mappedBy="user")
+    @JsonIgnore
+    private Set<Recipe> recipe = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_equipment",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "equipment_id")
+    )
+    private Set<Equipment> equipments = new HashSet<>();
+
+    public User(){
+    id = UUID.randomUUID();
+}
     public UUID getId() {
         return id;
+    }
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -78,27 +95,43 @@ public class User {
         this.address = address;
     }
 
-    public List<Coffee> getCoffeeList() {
-        return coffeeList;
+    public Set<Coffee> getCoffee() {
+        return coffee;
     }
 
-    public void setCoffeeList(List<Coffee> coffeeList) {
-        this.coffeeList = coffeeList;
+    public void setCoffee(Set<Coffee> coffee) {
+        this.coffee = coffee;
     }
 
-    public List<Recipe> getRecipeList() {
-        return recipeList;
+    public Set<Recipe> getRecipe() {
+        return recipe;
     }
 
-    public void setRecipeList(List<Recipe> recipeList) {
-        this.recipeList = recipeList;
+    public void setRecipe(Set<Recipe> recipe) {
+        this.recipe = recipe;
     }
 
-    public List<Equipment> getEquipmentList() {
-        return equipmentList;
+    public List<String> getEquipmentStringIds() {
+        return equipmentStringIds;
     }
 
-    public void setEquipmentList(List<Equipment> equipmentList) {
-        this.equipmentList = equipmentList;
+    public void setEquipmentStringIds(List<String> equipmentStringIds) {
+        this.equipmentStringIds = equipmentStringIds;
+    }
+
+    public Set<Equipment> getEquipments() {
+        return equipments;
+    }
+
+    public void setEquipments(Set<Equipment> equipments) {
+        this.equipments = equipments;
+    }
+
+    public void addEquipment(Equipment equipment) {
+        equipments.add(equipment);
+    }
+
+    public void removeEquipment(Equipment equipment) {
+        equipments.remove(equipment);
     }
 }

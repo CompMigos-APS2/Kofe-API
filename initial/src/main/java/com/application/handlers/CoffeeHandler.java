@@ -1,51 +1,38 @@
 package com.application.handlers;
 
-//import com.application.base.BaseState;
 import com.application.entities.Coffee;
 import com.application.repository.CoffeeRepository;
-//import com.application.states.CoffeeState;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/coffee")
-public class CoffeeHandler {
-    private final CoffeeRepository repository;
+public class CoffeeHandler extends GenericHandler<Coffee, CoffeeRepository> {
     @Autowired
-    public CoffeeHandler(CoffeeRepository repository){
-        this.repository = repository;
-    }
-    @RequestMapping("/get")
-    public List<Coffee> get(){
-        return repository.findAll();
-    }
-
-    @PostMapping("/save")
-    public void save(@RequestBody Coffee obj){
-        repository.save(obj);
-    }
-
-    @RequestMapping("/getById")
-    public Optional<Coffee> getById(String id){
-        UUID formattedId = UUID.fromString(id);
-        return repository.findById(formattedId);
+    public CoffeeHandler(CoffeeRepository repository) {
+        super(repository);
     }
     @RequestMapping("/getByName")
-    public List<Coffee> getByName(String name){
-        return repository.findByName(name);
+    public ResponseEntity<List<Coffee>> getByName(String name){
+        return new ResponseEntity<>(repository.findByName(name), HttpStatus.OK);
     }
 
-    @RequestMapping("/deleteById")
-    public void deleteById(String id){
+    @RequestMapping("/deleteCoffeeById")
+    public ResponseEntity<List<Object>> deleteCoffeeById(String id) {
+
         UUID formattedId = UUID.fromString(id);
-        repository.deleteById(formattedId);
+        List<Object> recipeList = repository.findRecipesWithCoffee(formattedId);
+        if(recipeList.size() == 0) {
+            repository.deleteById(formattedId);
+            return new ResponseEntity<>(recipeList, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(recipeList, HttpStatus.CONFLICT);
     }
 
 }
