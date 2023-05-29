@@ -30,7 +30,6 @@ public class User {
     private Set<Recipe> recipe = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JsonIgnore
     @JoinTable(
             name = "user_equipment",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -134,14 +133,5 @@ public class User {
 
     public void removeEquipment(Equipment equipment) {
         equipments.remove(equipment);
-    }
-
-    public List<UUID> getEquipmentIds() {
-        List<UUID> equipmentIds = new ArrayList<>();
-        for (String equipmentString : equipmentStringIds) {
-            UUID formattedId = UUID.fromString(equipmentString);
-            equipmentIds.add(formattedId);
-        }
-        return equipmentIds;
     }
 }
