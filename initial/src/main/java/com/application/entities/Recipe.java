@@ -166,26 +166,10 @@ public class Recipe {
         return coffeeUsed.remove(coffeeToRemove);
     }
 
-    public List<UUID> getCoffeeIds() {
-        List<UUID> coffeeIds = new ArrayList<>();
-        for (String coffeeString : coffeeStringIds) {
-            UUID formattedId = UUID.fromString(coffeeString);
-            coffeeIds.add(formattedId);
-        }
-        return coffeeIds;
-    }
-
-    public List<UUID> getEquipmentIds() {
-        List<UUID> equipmentIds = new ArrayList<>();
-        for (String equipmentString : equipmentStringIds) { //TODO:remover código repetido
-            UUID formattedId = UUID.fromString(equipmentString);
-            equipmentIds.add(formattedId);
-        }
-        return equipmentIds;
-    }
     public void addEquipmentUsed(Equipment equipmentToAdd) {
         equipmentUsed.add(equipmentToAdd);
     }
+
     public boolean removeEquipmentUsed(Equipment equipmentToRemove) {
         return equipmentUsed.remove(equipmentToRemove);
     }

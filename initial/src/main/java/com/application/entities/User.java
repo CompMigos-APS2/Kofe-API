@@ -1,5 +1,6 @@
 package com.application.entities;
 
+import ch.qos.logback.core.encoder.ByteArrayUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -18,6 +19,7 @@ public class User {
     private String password;
     private Date birthDate;
     private String address;
+    private List<String> equipmentStringIds = new ArrayList<>();
 
     @OneToMany(mappedBy="user")
     @JsonIgnore
@@ -27,7 +29,15 @@ public class User {
     @JsonIgnore
     private Set<Recipe> recipe = new HashSet<>();
 
-//    private List<Equipment> equipmentList;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @JoinTable(
+            name = "user_equipment",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "equipment_id")
+    )
+    private Set<Equipment> equipments = new HashSet<>();
+
     public User(){
     id = UUID.randomUUID();
 }
@@ -100,5 +110,38 @@ public class User {
 
     public void setRecipe(Set<Recipe> recipe) {
         this.recipe = recipe;
+    }
+
+    public List<String> getEquipmentStringIds() {
+        return equipmentStringIds;
+    }
+
+    public void setEquipmentStringIds(List<String> equipmentStringIds) {
+        this.equipmentStringIds = equipmentStringIds;
+    }
+
+    public Set<Equipment> getEquipments() {
+        return equipments;
+    }
+
+    public void setEquipments(Set<Equipment> equipments) {
+        this.equipments = equipments;
+    }
+
+    public void addEquipment(Equipment equipment) {
+        equipments.add(equipment);
+    }
+
+    public void removeEquipment(Equipment equipment) {
+        equipments.remove(equipment);
+    }
+
+    public List<UUID> getEquipmentIds() {
+        List<UUID> equipmentIds = new ArrayList<>();
+        for (String equipmentString : equipmentStringIds) {
+            UUID formattedId = UUID.fromString(equipmentString);
+            equipmentIds.add(formattedId);
+        }
+        return equipmentIds;
     }
 }
