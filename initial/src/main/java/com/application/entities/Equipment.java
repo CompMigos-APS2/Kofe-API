@@ -20,6 +20,9 @@ public class Equipment {
     @ManyToMany(mappedBy = "equipmentUsed")
     private Set<Recipe> recipes = new HashSet<Recipe>();
 
+    @ManyToMany(mappedBy = "equipments")
+    private Set<User> users = new HashSet<User>();
+
     public Equipment() {
         id = UUID.randomUUID();
     }

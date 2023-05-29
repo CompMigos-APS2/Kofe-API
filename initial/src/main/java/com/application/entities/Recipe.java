@@ -3,6 +3,7 @@ package com.application.entities;
 import jakarta.persistence.*;
 
 import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -13,7 +14,6 @@ public class Recipe {
 
     @Column(name="r_id")
     private UUID id;
-
     private String title;
     private String extractionMethod;
     private int coffeeQty;
@@ -22,6 +22,7 @@ public class Recipe {
     private String preparationMethod;
     private Date date;
     private float rating;
+    private LocalDateTime modificationDateTime = LocalDateTime.now();
     private List<String> commentsList;
     private List<String> coffeeStringIds = new ArrayList<>();
     @ManyToMany(fetch = FetchType.LAZY)
@@ -40,6 +41,11 @@ public class Recipe {
             inverseJoinColumns = @JoinColumn(name = "equipment_id")
     )
     private Set<Equipment> equipmentUsed = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name="u_id", nullable=false)
+    private User user;
+
 
     public Recipe() {
         id = UUID.randomUUID();
@@ -161,27 +167,27 @@ public class Recipe {
         return coffeeUsed.remove(coffeeToRemove);
     }
 
-    public List<UUID> getCoffeeIds() {
-        List<UUID> coffeeIds = new ArrayList<>();
-        for (String coffeeString : coffeeStringIds) {
-            UUID formattedId = UUID.fromString(coffeeString);
-            coffeeIds.add(formattedId);
-        }
-        return coffeeIds;
-    }
-
-    public List<UUID> getEquipmentIds() {
-        List<UUID> equipmentIds = new ArrayList<>();
-        for (String equipmentString : equipmentStringIds) { //TODO:remover código repetido
-            UUID formattedId = UUID.fromString(equipmentString);
-            equipmentIds.add(formattedId);
-        }
-        return equipmentIds;
-    }
     public void addEquipmentUsed(Equipment equipmentToAdd) {
         equipmentUsed.add(equipmentToAdd);
     }
+
     public boolean removeEquipmentUsed(Equipment equipmentToRemove) {
         return equipmentUsed.remove(equipmentToRemove);
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public LocalDateTime getModificationDateTime() {
+        return modificationDateTime;
+    }
+
+    public void setModificationDateTime(LocalDateTime modificationDateTime) {
+        this.modificationDateTime = modificationDateTime;
     }
 }
