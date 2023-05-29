@@ -20,8 +20,6 @@ public class Coffee {
     private String method;
     private String color; //TODO: implementar restrição de domínio
 
-    //TODO:add creationDate
-
     @ManyToMany(mappedBy = "coffeeUsed")
     private Set<Recipe> recipes = new HashSet<Recipe>();
 
