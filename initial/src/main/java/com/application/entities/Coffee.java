@@ -1,6 +1,8 @@
 package com.application.entities;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -26,6 +28,8 @@ public class Coffee {
     @ManyToOne
     @JoinColumn(name="u_id", nullable=false)
     private User user;
+
+    private LocalDateTime modificationDateTime = LocalDateTime.now();
 
     public Coffee(){
         id = UUID.randomUUID();
@@ -108,5 +112,13 @@ public class Coffee {
     public void setUser(User user) {
         this.user = user;
         user.getCoffee().add(this);
+    }
+
+    public LocalDateTime getModificationDateTime() {
+        return modificationDateTime;
+    }
+
+    public void setModificationDateTime(LocalDateTime modificationDateTime) {
+        this.modificationDateTime = modificationDateTime;
     }
 }

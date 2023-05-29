@@ -3,6 +3,7 @@ package com.application.entities;
 import jakarta.persistence.*;
 
 import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -21,8 +22,7 @@ public class Recipe {
     private String preparationMethod;
     private Date date;
     private float rating;
-
-    //TODO:add creationDate
+    private LocalDateTime modificationDateTime = LocalDateTime.now();
     private List<String> commentsList;
     private List<String> coffeeStringIds = new ArrayList<>();
     @ManyToMany(fetch = FetchType.LAZY)
@@ -45,6 +45,7 @@ public class Recipe {
     @ManyToOne
     @JoinColumn(name="u_id", nullable=false)
     private User user;
+
 
     public Recipe() {
         id = UUID.randomUUID();
@@ -196,5 +197,13 @@ public class Recipe {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public LocalDateTime getModificationDateTime() {
+        return modificationDateTime;
+    }
+
+    public void setModificationDateTime(LocalDateTime modificationDateTime) {
+        this.modificationDateTime = modificationDateTime;
     }
 }
