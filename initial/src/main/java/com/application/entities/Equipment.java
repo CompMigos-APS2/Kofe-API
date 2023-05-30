@@ -17,7 +17,6 @@ public class Equipment {
     private String brand;
     private String model;
     private EquipmentType type;
-    private List<String> userIds;
 
     @ManyToMany(mappedBy = "equipmentUsed")
     @JsonIgnore
@@ -59,11 +58,4 @@ public class Equipment {
         this.type = type;
     }
 
-    public List<String> getUserIds() {
-        return userIds;
-    }
-
-    public void setUserIds(List<String> userIds) {
-        this.userIds = userIds;
-    }
 }

@@ -1,6 +1,5 @@
 package com.application.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.sql.Time;
@@ -25,7 +24,7 @@ public class Recipe {
     private float rating;
     private LocalDateTime modificationDateTime = LocalDateTime.now();
     private List<String> commentsList;
-    private List<UUID> coffeeStringIds = new ArrayList<>();
+    private List<UUID> coffeeIds = new ArrayList<>();
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "recipe_coffee",
@@ -33,7 +32,7 @@ public class Recipe {
             inverseJoinColumns = @JoinColumn(name = "coffee_id")
     )
     private Set<Coffee> coffeeUsed = new HashSet<>();
-    private List<UUID> equipmentStringIds = new ArrayList<>();
+    private List<UUID> equipmentIds = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -42,11 +41,6 @@ public class Recipe {
             inverseJoinColumns = @JoinColumn(name = "equipment_id")
     )
     private Set<Equipment> equipmentUsed = new HashSet<>();
-
-//    @ManyToOne
-//    @JsonIgnore
-//    @JoinColumn(name="u_id", nullable=false)
-//    private User user;
     private UUID userId;
 
     public Recipe() {
@@ -104,10 +98,10 @@ public class Recipe {
         this.commentsList = commentsList;
     }
     public List<UUID> getCoffeeIds() {
-        return coffeeStringIds;
+        return coffeeIds;
     }
-    public void setCoffeeIds(List<UUID> coffeeStringIds) {
-        this.coffeeStringIds = coffeeStringIds;
+    public void setCoffeeIds(List<UUID> coffeeIds) {
+        this.coffeeIds = coffeeIds;
     }
     public String getTitle() {
         return title;
@@ -122,10 +116,10 @@ public class Recipe {
         this.coffeeUsed = coffeeUsed;
     }
     public List<UUID> getEquipmentIds() {
-        return equipmentStringIds;
+        return equipmentIds;
     }
-    public void setEquipmentIds(List<UUID> equipmentStringIds) {
-        this.equipmentStringIds = equipmentStringIds;
+    public void setEquipmentIds(List<UUID> equipmentIds) {
+        this.equipmentIds = equipmentIds;
     }
     public Set<Equipment> getEquipmentUsed() {
         return equipmentUsed;
@@ -145,12 +139,6 @@ public class Recipe {
     public boolean removeEquipmentUsed(Equipment equipmentToRemove) {
         return equipmentUsed.remove(equipmentToRemove);
     }
-//    public User getUser() {
-//        return user;
-//    }
-//    public void setUser(User user) {
-//        this.user = user;
-//    }
     public LocalDateTime getModificationDateTime() {
         return modificationDateTime;
     }

@@ -25,11 +25,6 @@ public class Coffee {
     @ManyToMany(mappedBy = "coffeeUsed")
     @JsonIgnore
     private Set<Recipe> recipes = new HashSet<Recipe>();
-
-//    @ManyToOne
-//    @JsonIgnore
-//    @JoinColumn(name="u_id", nullable=false)
-//    private User user;
     private UUID userId;
 
     public Coffee(){
@@ -89,12 +84,6 @@ public class Coffee {
     public void setColor(String color) {
         this.color = color;
     }
-//    public User getUser() {
-//        return user;
-//    }
-//    public void setUser(User user) {
-//        this.user = user;
-//    }
     public LocalDateTime getModificationDateTime() {
         return modificationDateTime;
     }

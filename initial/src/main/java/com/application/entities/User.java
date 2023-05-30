@@ -18,15 +18,7 @@ public class User {
     private Date birthDate;
     private String address;
     private List<UUID> equipmentIds = new ArrayList<>();
-
-//    @OneToMany(mappedBy="user")
-//    @JsonIgnore
-//    private Set<Coffee> coffees = new HashSet<>();
     private List<UUID> coffeesIds = new ArrayList<>();
-
-//    @OneToMany(mappedBy="user")
-//    private Set<Recipe> recipes = new HashSet<>();
-
     private List<UUID> recipesIds = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -84,18 +76,6 @@ public class User {
     public void setAddress(String address) {
         this.address = address;
     }
-//    public Set<Coffee> getCoffees() {
-//        return coffees;
-//    }
-//    public void setCoffees(Set<Coffee> coffees) {
-//        this.coffees = coffees;
-//    }
-//    public Set<Recipe> getRecipes() {
-//        return recipes;
-//    }
-//    public void setRecipes(Set<Recipe> recipes) {
-//        this.recipes = recipes;
-//    }
     public List<UUID> getEquipmentIds() {
         return equipmentIds;
     }
@@ -134,6 +114,9 @@ public class User {
         this.recipesIds = recipesIds;
     }
     public void updateRecipesIds(UUID id){
+        for(UUID recipe : recipesIds)
+            if(recipe.equals(id))
+                return;
         recipesIds.add(id);
-    } //Todo: verificar repetição antes??
+    }
 }
