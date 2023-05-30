@@ -3,7 +3,9 @@ package com.application.handlers;
 import com.application.entities.Equipment;
 import com.application.entities.User;
 import com.application.entities.Coffee;
+import com.application.entities.Recipe;
 import com.application.repository.EquipmentRepository;
+import com.application.repository.RecipeRepository;
 import com.application.repository.UserRepository;
 import com.application.repository.CoffeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
     public UserHandler(UserRepository repository) {
         super(repository);
     }
+    @Autowired EquipmentRepository equipmentRepository;
+    @Autowired CoffeeRepository coffeeRepository;
+    @Autowired RecipeRepository recipeRepository;
 
     @RequestMapping("/getByEmail")
     public ResponseEntity<List<User>> getByEmail(String email){
@@ -38,7 +43,6 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
         return new ResponseEntity<>(repository.login(email, password), HttpStatus.OK);
     }
 
-    @Autowired EquipmentRepository equipmentRepository;
     @PostMapping("/save")
     public ResponseEntity<User> save(@RequestBody User obj) {
         List<UUID> equipmentIds = obj.getEquipmentIds();
@@ -51,9 +55,7 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
         User savedUser = repository.save(obj);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
-
-    @Autowired 
-    private CoffeeRepository coffeeRepository;
+    // acho q da pra fazer isso de forma mais geral
     @RequestMapping("/getCoffees")
     public ResponseEntity<List<Coffee>> getCoffees(String id){
         UUID formattedId = UUID.fromString(id);
@@ -65,4 +67,29 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
         coffeeRepository.findAllById(coffeeIds).forEach(coffees::add);
         return new ResponseEntity<>(coffees, HttpStatus.OK);
     }
+
+    @RequestMapping("/getEquipments")
+    public ResponseEntity<List<Equipment>> getEquipments(String id){
+        UUID formattedId = UUID.fromString(id);
+        Optional<User> user = repository.findById(formattedId);
+        if(user.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        List<UUID> equipmentIds = user.get().getEquipmentIds();
+        List<Equipment> equipments = new ArrayList<>();
+        equipmentRepository.findAllById(equipmentIds).forEach(equipments::add);
+        return new ResponseEntity<>(equipments, HttpStatus.OK);
+    }
+
+    @RequestMapping("/getRecipes")
+    public ResponseEntity<List<Recipe>> getRecipes(String id) {
+        UUID formattedId = UUID.fromString(id);
+        Optional<User> user = repository.findById(formattedId);
+        if(user.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        List<UUID> recipeIds = user.get().getRecipesIds();
+        List<Recipe> recipes = new ArrayList<>();
+        recipeRepository.findAllById(recipeIds).forEach(recipes::add);
+        return new ResponseEntity<>(recipes, HttpStatus.OK);
+    }
+
 }
