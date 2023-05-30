@@ -43,10 +43,10 @@ public class Recipe {
     )
     private Set<Equipment> equipmentUsed = new HashSet<>();
 
-    @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name="u_id", nullable=false)
-    private User user;
+//    @ManyToOne
+//    @JsonIgnore
+//    @JoinColumn(name="u_id", nullable=false)
+//    private User user;
     private String userId;
 
     public Recipe() {
@@ -145,12 +145,12 @@ public class Recipe {
     public boolean removeEquipmentUsed(Equipment equipmentToRemove) {
         return equipmentUsed.remove(equipmentToRemove);
     }
-    public User getUser() {
-        return user;
-    }
-    public void setUser(User user) {
-        this.user = user;
-    }
+//    public User getUser() {
+//        return user;
+//    }
+//    public void setUser(User user) {
+//        this.user = user;
+//    }
     public LocalDateTime getModificationDateTime() {
         return modificationDateTime;
     }

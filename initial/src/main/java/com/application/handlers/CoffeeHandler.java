@@ -46,9 +46,17 @@ public class CoffeeHandler extends GenericHandler<Coffee, CoffeeRepository> {
     public ResponseEntity<Coffee> save(@RequestBody Coffee obj) {
         String userStringId = obj.getUserId();
         Optional<User> user = userRepository.findById(UUID.fromString(userStringId));
-        obj.setUser(user.get());
-
+        if(user.isEmpty()){
+            //retornar algm exception de not found aqui
+        }
+        obj.setUserId(userStringId);
         Coffee savedCoffee = repository.save(obj);
+
+        String coffeeId = savedCoffee.getId().toString();
+        user.get().updateCoffeesIds(coffeeId);
+
+        userRepository.save(user.get());
+
         return new ResponseEntity<>(savedCoffee, HttpStatus.CREATED);
     }
 

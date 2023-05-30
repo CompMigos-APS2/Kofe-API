@@ -18,11 +18,15 @@ public class User {
     private String address;
     private List<String> equipmentStringIds = new ArrayList<>();
 
-    @OneToMany(mappedBy="user")
-    private Set<Coffee> coffees = new HashSet<>();
+//    @OneToMany(mappedBy="user")
+//    @JsonIgnore
+//    private Set<Coffee> coffees = new HashSet<>();
+    private List<String> coffeesIds = new ArrayList<>();
 
-    @OneToMany(mappedBy="user")
-    private Set<Recipe> recipes = new HashSet<>();
+//    @OneToMany(mappedBy="user")
+//    private Set<Recipe> recipes = new HashSet<>();
+
+    private List<String> recipesIds = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -78,18 +82,18 @@ public class User {
     public void setAddress(String address) {
         this.address = address;
     }
-    public Set<Coffee> getCoffees() {
-        return coffees;
-    }
-    public void setCoffees(Set<Coffee> coffees) {
-        this.coffees = coffees;
-    }
-    public Set<Recipe> getRecipes() {
-        return recipes;
-    }
-    public void setRecipes(Set<Recipe> recipes) {
-        this.recipes = recipes;
-    }
+//    public Set<Coffee> getCoffees() {
+//        return coffees;
+//    }
+//    public void setCoffees(Set<Coffee> coffees) {
+//        this.coffees = coffees;
+//    }
+//    public Set<Recipe> getRecipes() {
+//        return recipes;
+//    }
+//    public void setRecipes(Set<Recipe> recipes) {
+//        this.recipes = recipes;
+//    }
     public List<String> getEquipmentStringIds() {
         return equipmentStringIds;
     }
@@ -108,4 +112,23 @@ public class User {
     public void removeEquipment(Equipment equipment) {
         equipments.remove(equipment);
     }
+
+    public List<String> getCoffeesIds() {
+        return coffeesIds;
+    }
+    public void setCoffeesIds(List<String> coffeesIds) {
+        this.coffeesIds = coffeesIds;
+    }
+    public void updateCoffeesIds(String id){
+        coffeesIds.add(id);
+    }
+    public List<String> getRecipesIds() {
+        return recipesIds;
+    }
+    public void setRecipesIds(List<String> recipesIds) {
+        this.recipesIds = recipesIds;
+    }
+    public void updateRecipesIds(String id){
+        recipesIds.add(id);
+    } //Todo: verificar repetição antes??
 }

@@ -44,7 +44,10 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
     public ResponseEntity<Recipe> save(@RequestBody Recipe obj) {
         String userStringId = obj.getUserId();
         Optional<User> user = userRepository.findById(UUID.fromString(userStringId));
-        obj.setUser(user.get());
+        if(user.isEmpty()){
+            //retornar algm exception de not found aqui
+        }
+        obj.setUserId(userStringId);
 
         List<String> coffeeStringIds = obj.getCoffeeStringIds();
         for(String coffeeStringId : coffeeStringIds) {
@@ -61,6 +64,11 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
             obj.addEquipmentUsed(equipment.get());
         }
         Recipe savedRecipe = repository.save(obj);
+
+        String recipeId = savedRecipe.getId().toString();
+        user.get().updateRecipesIds(recipeId);
+        userRepository.save(user.get());
+
         return new ResponseEntity<>(savedRecipe, HttpStatus.CREATED);
     }
 }
