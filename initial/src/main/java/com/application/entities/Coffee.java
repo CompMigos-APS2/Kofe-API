@@ -30,7 +30,7 @@ public class Coffee {
 //    @JsonIgnore
 //    @JoinColumn(name="u_id", nullable=false)
 //    private User user;
-    private String userId;
+    private UUID userId;
 
     public Coffee(){
         id = UUID.randomUUID();
@@ -101,10 +101,10 @@ public class Coffee {
     public void setModificationDateTime(LocalDateTime modificationDateTime) {
         this.modificationDateTime = modificationDateTime;
     }
-    public String getUserId() {
+    public UUID getUserId() {
         return userId;
     }
-    public void setUserId(String userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
     public Set<Recipe> getRecipes() {

@@ -42,30 +42,30 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
 
     @PostMapping("/save")
     public ResponseEntity<Recipe> save(@RequestBody Recipe obj) {
-        String userStringId = obj.getUserId();
-        Optional<User> user = userRepository.findById(UUID.fromString(userStringId));
+        UUID userStringId = obj.getUserId();
+        Optional<User> user = userRepository.findById(userStringId);
         if(user.isEmpty()){
             //retornar algm exception de not found aqui
         }
         obj.setUserId(userStringId);
 
-        List<String> coffeeStringIds = obj.getCoffeeStringIds();
-        for(String coffeeStringId : coffeeStringIds) {
-            Optional<Coffee> coffee = coffeeRepository.findById(UUID.fromString(coffeeStringId));
+        List<UUID> coffeeIds = obj.getCoffeeIds();
+        for(UUID coffeeId : coffeeIds) {
+            Optional<Coffee> coffee = coffeeRepository.findById(coffeeId);
             if(coffee.isEmpty())
                 continue;
             obj.addCoffeeUsed(coffee.get());
         }
-        List<String> equipmentStringIds = obj.getEquipmentStringIds();
-        for(String equipmentStringId : equipmentStringIds) {
-            Optional<Equipment> equipment = equipmentRepository.findById(UUID.fromString(equipmentStringId));
+        List<UUID> equipmentIds = obj.getEquipmentIds();
+        for(UUID equipmentId : equipmentIds) {
+            Optional<Equipment> equipment = equipmentRepository.findById(equipmentId);
             if(equipment.isEmpty())
                 continue;
             obj.addEquipmentUsed(equipment.get());
         }
         Recipe savedRecipe = repository.save(obj);
 
-        String recipeId = savedRecipe.getId().toString();
+        UUID recipeId = savedRecipe.getId();
         user.get().updateRecipesIds(recipeId);
         userRepository.save(user.get());
 

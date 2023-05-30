@@ -44,15 +44,15 @@ public class CoffeeHandler extends GenericHandler<Coffee, CoffeeRepository> {
 
     @PostMapping("/save")
     public ResponseEntity<Coffee> save(@RequestBody Coffee obj) {
-        String userStringId = obj.getUserId();
-        Optional<User> user = userRepository.findById(UUID.fromString(userStringId));
+        UUID userId = obj.getUserId();
+        Optional<User> user = userRepository.findById(userId);
         if(user.isEmpty()){
             //retornar algm exception de not found aqui
         }
-        obj.setUserId(userStringId);
+        obj.setUserId(userId);
         Coffee savedCoffee = repository.save(obj);
 
-        String coffeeId = savedCoffee.getId().toString();
+        UUID coffeeId = savedCoffee.getId();
         user.get().updateCoffeesIds(coffeeId);
 
         userRepository.save(user.get());

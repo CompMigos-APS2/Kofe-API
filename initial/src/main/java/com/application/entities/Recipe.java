@@ -25,7 +25,7 @@ public class Recipe {
     private float rating;
     private LocalDateTime modificationDateTime = LocalDateTime.now();
     private List<String> commentsList;
-    private List<String> coffeeStringIds = new ArrayList<>();
+    private List<UUID> coffeeStringIds = new ArrayList<>();
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "recipe_coffee",
@@ -33,7 +33,7 @@ public class Recipe {
             inverseJoinColumns = @JoinColumn(name = "coffee_id")
     )
     private Set<Coffee> coffeeUsed = new HashSet<>();
-    private List<String> equipmentStringIds = new ArrayList<>();
+    private List<UUID> equipmentStringIds = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -47,7 +47,7 @@ public class Recipe {
 //    @JsonIgnore
 //    @JoinColumn(name="u_id", nullable=false)
 //    private User user;
-    private String userId;
+    private UUID userId;
 
     public Recipe() {
         id = UUID.randomUUID();
@@ -103,10 +103,10 @@ public class Recipe {
     public void setCommentsList(List<String> commentsList) {
         this.commentsList = commentsList;
     }
-    public List<String> getCoffeeStringIds() {
+    public List<UUID> getCoffeeIds() {
         return coffeeStringIds;
     }
-    public void setCoffeeStringIds(List<String> coffeeStringIds) {
+    public void setCoffeeIds(List<UUID> coffeeStringIds) {
         this.coffeeStringIds = coffeeStringIds;
     }
     public String getTitle() {
@@ -121,10 +121,10 @@ public class Recipe {
     public void setCoffeeUsed(Set<Coffee> coffeeUsed) {
         this.coffeeUsed = coffeeUsed;
     }
-    public List<String> getEquipmentStringIds() {
+    public List<UUID> getEquipmentIds() {
         return equipmentStringIds;
     }
-    public void setEquipmentStringIds(List<String> equipmentStringIds) {
+    public void setEquipmentIds(List<UUID> equipmentStringIds) {
         this.equipmentStringIds = equipmentStringIds;
     }
     public Set<Equipment> getEquipmentUsed() {
@@ -157,10 +157,10 @@ public class Recipe {
     public void setModificationDateTime(LocalDateTime modificationDateTime) {
         this.modificationDateTime = modificationDateTime;
     }
-    public String getUserId() {
+    public UUID getUserId() {
         return userId;
     }
-    public void setUserId(String userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 }

@@ -41,9 +41,9 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
     @Autowired EquipmentRepository equipmentRepository;
     @PostMapping("/save")
     public ResponseEntity<User> save(@RequestBody User obj) {
-        List<String> equipmentIds = obj.getEquipmentIds();
-        for(String equipmentId : equipmentIds) {
-            Optional<Equipment> equipment = equipmentRepository.findById(UUID.fromString(equipmentId));
+        List<UUID> equipmentIds = obj.getEquipmentIds();
+        for(UUID equipmentId : equipmentIds) {
+            Optional<Equipment> equipment = equipmentRepository.findById(equipmentId);
             if(equipment.isEmpty())
                 continue;
             obj.addEquipment(equipment.get());
@@ -60,11 +60,7 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
         Optional<User> user = repository.findById(formattedId);
         if(user.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        List<String> coffeeStringIds = user.get().getCoffeesIds();
-        List<UUID> coffeeIds = new ArrayList<>();
-        for(String coffeeStringId : coffeeStringIds) {
-            coffeeIds.add(UUID.fromString(coffeeStringId));
-        }
+        List<UUID> coffeeIds = user.get().getCoffeesIds();
         List<Coffee> coffees = new ArrayList<>();
         coffeeRepository.findAllById(coffeeIds).forEach(coffees::add);
         return new ResponseEntity<>(coffees, HttpStatus.OK);
