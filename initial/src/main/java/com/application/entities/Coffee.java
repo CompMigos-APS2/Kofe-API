@@ -23,6 +23,7 @@ public class Coffee {
     private LocalDateTime modificationDateTime = LocalDateTime.now();
 
     @ManyToMany(mappedBy = "coffeeUsed")
+    @JsonIgnore
     private Set<Recipe> recipes = new HashSet<Recipe>();
 
 //    @ManyToOne

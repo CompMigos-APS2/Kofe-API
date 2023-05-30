@@ -1,5 +1,6 @@
 package com.application.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.*;
 
@@ -16,7 +17,7 @@ public class User {
     private String password;
     private Date birthDate;
     private String address;
-    private List<String> equipmentStringIds = new ArrayList<>();
+    private List<String> equipmentIds = new ArrayList<>();
 
 //    @OneToMany(mappedBy="user")
 //    @JsonIgnore
@@ -29,6 +30,7 @@ public class User {
     private List<String> recipesIds = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinTable(
             name = "user_equipment",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -94,11 +96,11 @@ public class User {
 //    public void setRecipes(Set<Recipe> recipes) {
 //        this.recipes = recipes;
 //    }
-    public List<String> getEquipmentStringIds() {
-        return equipmentStringIds;
+    public List<String> getEquipmentIds() {
+        return equipmentIds;
     }
-    public void setEquipmentStringIds(List<String> equipmentStringIds) {
-        this.equipmentStringIds = equipmentStringIds;
+    public void setEquipmentIds(List<String> equipmentIds) {
+        this.equipmentIds = equipmentIds;
     }
     public Set<Equipment> getEquipments() {
         return equipments;
@@ -120,6 +122,9 @@ public class User {
         this.coffeesIds = coffeesIds;
     }
     public void updateCoffeesIds(String id){
+        for(String coffee : coffeesIds)
+            if(coffee.equals(id))
+                return;
         coffeesIds.add(id);
     }
     public List<String> getRecipesIds() {

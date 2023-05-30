@@ -1,8 +1,10 @@
 package com.application.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -14,13 +16,15 @@ public class Equipment {
     private UUID id;
     private String brand;
     private String model;
-
     private EquipmentType type;
+    private List<String> userIds;
 
     @ManyToMany(mappedBy = "equipmentUsed")
+    @JsonIgnore
     private Set<Recipe> recipes = new HashSet<Recipe>();
 
     @ManyToMany(mappedBy = "equipments")
+    @JsonIgnore
     private Set<User> users = new HashSet<User>();
 
     public Equipment() {
@@ -53,5 +57,13 @@ public class Equipment {
 
     public void setType(EquipmentType type) {
         this.type = type;
+    }
+
+    public List<String> getUserIds() {
+        return userIds;
+    }
+
+    public void setUserIds(List<String> userIds) {
+        this.userIds = userIds;
     }
 }
