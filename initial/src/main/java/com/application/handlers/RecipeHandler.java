@@ -8,6 +8,7 @@ import com.application.repository.CoffeeRepository;
 import com.application.repository.EquipmentRepository;
 import com.application.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +30,10 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
     }
     @RequestMapping("/getByTitle")
     public ResponseEntity<List<Recipe>> getByTitle(String title){
-        return new ResponseEntity<>(repository.findByTitle(title), HttpStatus.OK);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
+        
+        return new ResponseEntity<>(repository.findByTitle(title), headers, HttpStatus.OK);
     }
 
     @Autowired
@@ -53,7 +57,10 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
             obj.addEquipmentUsed(equipment.get());
         }
         Recipe savedRecipe = repository.save(obj);
-        return new ResponseEntity<>(savedRecipe, HttpStatus.CREATED);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
+
+        return new ResponseEntity<>(savedRecipe, headers, HttpStatus.CREATED);
     }
 
 }

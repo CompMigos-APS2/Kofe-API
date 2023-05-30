@@ -2,6 +2,7 @@ package com.application.handlers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,24 +23,36 @@ public class GenericHandler<T, TRepository extends JpaRepository<T, UUID>>{
     }
     @RequestMapping("/get")
     public ResponseEntity<List<T>> get(){
-        return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
+        
+        return new ResponseEntity<>(repository.findAll(), headers, HttpStatus.OK);
     }
 
     @PostMapping("/save")
     public ResponseEntity<T> save(@RequestBody T obj){
-        return new ResponseEntity<>(repository.save(obj), HttpStatus.CREATED);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
+        
+        return new ResponseEntity<>(repository.save(obj), headers, HttpStatus.CREATED);
     }
 
     @RequestMapping("/getById")
     public ResponseEntity<Optional<T>> getById(String id){
         UUID formattedId = UUID.fromString(id);
-        return new ResponseEntity<>(repository.findById(formattedId), HttpStatus.OK);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
+        
+        return new ResponseEntity<>(repository.findById(formattedId), headers, HttpStatus.OK);
     }
 
     @RequestMapping("/deleteById")
     public ResponseEntity<HttpStatus> deleteById(String id){
         UUID formattedId = UUID.fromString(id);
         repository.deleteById(formattedId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
+        
+        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
 }
