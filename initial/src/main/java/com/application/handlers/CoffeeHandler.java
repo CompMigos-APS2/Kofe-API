@@ -5,6 +5,7 @@ import com.application.entities.User;
 import com.application.repository.CoffeeRepository;
 import com.application.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +28,10 @@ public class CoffeeHandler extends GenericHandler<Coffee, CoffeeRepository> {
     }
     @RequestMapping("/getByName")
     public ResponseEntity<List<Coffee>> getByName(String name){
-        return new ResponseEntity<>(repository.findByName(name), HttpStatus.OK);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
+        
+        return new ResponseEntity<>(repository.findByName(name), headers, HttpStatus.OK);
     }
 
     @RequestMapping("/deleteCoffeeById")
@@ -39,7 +43,10 @@ public class CoffeeHandler extends GenericHandler<Coffee, CoffeeRepository> {
             repository.deleteById(formattedId);
             return new ResponseEntity<>(recipeList, HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(recipeList, HttpStatus.CONFLICT);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
+
+        return new ResponseEntity<>(recipeList, headers, HttpStatus.CONFLICT);
     }
 
     @PostMapping("/save")

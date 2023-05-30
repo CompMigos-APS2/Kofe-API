@@ -9,6 +9,7 @@ import com.application.repository.RecipeRepository;
 import com.application.repository.UserRepository;
 import com.application.repository.CoffeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,11 +35,17 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
 
     @RequestMapping("/getByEmail")
     public ResponseEntity<List<User>> getByEmail(String email){
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
+
         return new ResponseEntity<>(repository.findByEmail(email), HttpStatus.OK);
     }
 
     @RequestMapping("/login")
     public ResponseEntity<User> login(String email, String password){
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
+
         return new ResponseEntity<>(repository.login(email, password), HttpStatus.OK);
     }
 
@@ -52,6 +59,9 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
             obj.addEquipment(equipment.get());
         }
         User savedUser = repository.save(obj);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
+
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
     // acho q da pra fazer isso de forma mais geral
