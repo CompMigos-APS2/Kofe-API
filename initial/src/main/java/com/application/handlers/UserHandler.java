@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/user")
@@ -64,41 +63,42 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
 
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
-    // acho q da pra fazer isso de forma mais geral
     @RequestMapping("/getCoffees")
     public ResponseEntity<List<Coffee>> getCoffees(String id){
-        UUID formattedId = UUID.fromString(id);
-        Optional<User> user = repository.findById(formattedId);
-        if(user.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        List<UUID> coffeeIds = user.get().getCoffeesIds();
-        List<Coffee> coffees = new ArrayList<>();
-        coffeeRepository.findAllById(coffeeIds).forEach(coffees::add);
-        return new ResponseEntity<>(coffees, HttpStatus.OK);
+        return handleRelatedEntities(id, User::getCoffeesIds, coffeeRepository::findAllById);
     }
 
     @RequestMapping("/getEquipments")
     public ResponseEntity<List<Equipment>> getEquipments(String id){
-        UUID formattedId = UUID.fromString(id);
-        Optional<User> user = repository.findById(formattedId);
-        if(user.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        List<UUID> equipmentIds = user.get().getEquipmentIds();
-        List<Equipment> equipments = new ArrayList<>();
-        equipmentRepository.findAllById(equipmentIds).forEach(equipments::add);
-        return new ResponseEntity<>(equipments, HttpStatus.OK);
+        return handleRelatedEntities(id, User::getEquipmentIds, equipmentRepository::findAllById);
     }
 
     @RequestMapping("/getRecipes")
     public ResponseEntity<List<Recipe>> getRecipes(String id) {
+        return handleRelatedEntities(id, User::getRecipesIds, recipeRepository::findAllById);
+    }
+
+    private <T> ResponseEntity<List<T>> handleRelatedEntities(String id, IdGetter<UUID> idGetter, EntityFetcher<UUID, T> entityFetcher) {
         UUID formattedId = UUID.fromString(id);
         Optional<User> user = repository.findById(formattedId);
         if(user.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        List<UUID> recipeIds = user.get().getRecipesIds();
-        List<Recipe> recipes = new ArrayList<>();
-        recipeRepository.findAllById(recipeIds).forEach(recipes::add);
-        return new ResponseEntity<>(recipes, HttpStatus.OK);
+        List<UUID> entityIds = idGetter.getIds(user.get());
+        List<T> entities = entityFetcher.fetchEntities(entityIds);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
+        return new ResponseEntity<>(entities, HttpStatus.OK);
+    }
+
+    @FunctionalInterface
+    private interface IdGetter<T> {
+        List<T> getIds(User user);
+    }
+
+    @FunctionalInterface
+    private interface EntityFetcher<T, R> {
+        List<R> fetchEntities(List<T> entityIds);
     }
 
 }

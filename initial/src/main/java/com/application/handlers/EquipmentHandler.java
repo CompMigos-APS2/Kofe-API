@@ -26,6 +26,4 @@ public class EquipmentHandler extends GenericHandler<Equipment, EquipmentReposit
         
         return new ResponseEntity<>(repository.findByType(type), headers, HttpStatus.OK);
     }
-
-
 }
