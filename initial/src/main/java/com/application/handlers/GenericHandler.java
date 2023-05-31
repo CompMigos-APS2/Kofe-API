@@ -2,7 +2,6 @@ package com.application.handlers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,36 +22,26 @@ public class GenericHandler<T, TRepository extends JpaRepository<T, UUID>>{
     }
     @RequestMapping("/get")
     public ResponseEntity<List<T>> get(){
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
-        
-        return new ResponseEntity<>(repository.findAll(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
     }
 
     @PostMapping("/save")
     public ResponseEntity<T> save(@RequestBody T obj){
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
-        
-        return new ResponseEntity<>(repository.save(obj), headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(repository.save(obj), HttpStatus.CREATED);
     }
 
     @RequestMapping("/getById")
     public ResponseEntity<Optional<T>> getById(String id){
         UUID formattedId = UUID.fromString(id);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
-        
-        return new ResponseEntity<>(repository.findById(formattedId), headers, HttpStatus.OK);
+
+        return new ResponseEntity<>(repository.findById(formattedId), HttpStatus.OK);
     }
 
     @RequestMapping("/deleteById")
     public ResponseEntity<HttpStatus> deleteById(String id){
         UUID formattedId = UUID.fromString(id);
         repository.deleteById(formattedId);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
         
-        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

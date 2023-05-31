@@ -4,7 +4,6 @@ import com.application.entities.Equipment;
 import com.application.entities.EquipmentType;
 import com.application.repository.EquipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,9 +20,6 @@ public class EquipmentHandler extends GenericHandler<Equipment, EquipmentReposit
     }
     @RequestMapping("/getByType")
     public ResponseEntity<List<Equipment>> getByType(EquipmentType type){
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
-        
-        return new ResponseEntity<>(repository.findByType(type), headers, HttpStatus.OK);
+        return new ResponseEntity<>(repository.findByType(type), HttpStatus.OK);
     }
 }

@@ -10,7 +10,6 @@ import com.application.repository.EquipmentRepository;
 import com.application.repository.RecipeRepository;
 import com.application.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,10 +37,7 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
     }
     @RequestMapping("/getByTitle")
     public ResponseEntity<List<Recipe>> getByTitle(String title){
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
-        
-        return new ResponseEntity<>(repository.findByTitle(title), headers, HttpStatus.OK);
+        return new ResponseEntity<>(repository.findByTitle(title), HttpStatus.OK);
     }
 
     @PostMapping("/save")
@@ -72,10 +68,7 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
         UUID recipeId = savedRecipe.getId();
         user.get().updateRecipesIds(recipeId);
         userRepository.save(user.get());
-      
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
 
-        return new ResponseEntity<>(savedRecipe, headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(savedRecipe, HttpStatus.CREATED);
     }
 }
