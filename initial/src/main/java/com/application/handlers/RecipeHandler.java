@@ -10,6 +10,7 @@ import com.application.repository.CoffeeRepository;
 import com.application.repository.EquipmentRepository;
 import com.application.repository.RecipeRepository;
 import com.application.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,15 +34,10 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    public RecipeHandler(RecipeRepository repository, RecipeFilter filter) {
+    public RecipeHandler(RecipeRepository repository, RecipeFilter filter, EntityManager em) {
         super(repository);
-        this.filter = new RecipeFilter();
+        this.filter = new RecipeFilter(em);
     }
-    @RequestMapping("/getByTitle")
-    public ResponseEntity<List<Recipe>> getByTitle(String title){
-        return new ResponseEntity<>(repository.findByTitle(title), HttpStatus.OK);
-    }
-
     @PostMapping("/save")
     public ResponseEntity<Recipe> save(@RequestBody Recipe obj) {
         UUID userStringId = obj.getUserId();

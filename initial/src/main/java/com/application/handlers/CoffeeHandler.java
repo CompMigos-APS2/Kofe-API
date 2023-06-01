@@ -23,20 +23,13 @@ import java.util.UUID;
 public class CoffeeHandler extends GenericHandler<Coffee, CoffeeRepository> {
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     public CoffeeHandler(CoffeeRepository repository, EntityManager em) {
         super(repository);
         this.filter = new CoffeeFilter(em);
     }
-    @RequestMapping("/getByName")
-    public ResponseEntity<List<Coffee>> getByName(String name){
-        return new ResponseEntity<>(repository.findByName(name), HttpStatus.OK);
-    }
-
     @RequestMapping("/deleteCoffeeById")
     public ResponseEntity<List<Object>> deleteCoffeeById(String id) {
-
         UUID formattedId = UUID.fromString(id);
         List<Object> recipeList = repository.findRecipesWithCoffee(formattedId);
         if(recipeList.size() == 0) {

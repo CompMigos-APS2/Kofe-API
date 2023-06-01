@@ -34,7 +34,6 @@ public class GenericHandler<T, TRepository extends JpaRepository<T, UUID>>{
     }
     @PostMapping("/get")
     public ResponseEntity<List<T>> get(@RequestBody String jsonReq) throws JsonProcessingException {
-        System.out.println(jsonReq);
         return new ResponseEntity<>(em.createQuery(filter.buildQuery(jsonReq)).getResultList(), HttpStatus.OK);
     }
 

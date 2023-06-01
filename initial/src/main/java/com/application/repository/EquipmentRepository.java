@@ -12,8 +12,6 @@ import com.application.entities.EquipmentType;
 
 @RepositoryRestResource(collectionResourceRel = "equipment", path = "equipment")
 public interface EquipmentRepository extends JpaRepository<Equipment, UUID> {
-    List<Equipment> findByType(@Param("type") EquipmentType type);
-
 //    @Query(value = "SELECT r.title, r.r_id FROM recipe_equipment re INNER JOIN Recipe r ON re.recipe_id = r.r_id WHERE re.equipment_id = :equipment_id", nativeQuery = true)
 //    List<Object> findRecipesWithEquipment(@Param("equipment_id") UUID equipment_id);
 }

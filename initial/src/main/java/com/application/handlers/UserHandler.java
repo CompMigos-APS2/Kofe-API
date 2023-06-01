@@ -9,6 +9,7 @@ import com.application.repository.EquipmentRepository;
 import com.application.repository.RecipeRepository;
 import com.application.repository.UserRepository;
 import com.application.repository.CoffeeRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,19 +26,13 @@ import java.util.UUID;
 @RequestMapping("/user")
 public class UserHandler extends GenericHandler<User, UserRepository> {
     @Autowired
-    public UserHandler(UserRepository repository) {
+    public UserHandler(UserRepository repository, EntityManager em) {
         super(repository);
-        this.filter = new UserFilter();
+        this.filter = new UserFilter(em);
     }
     @Autowired EquipmentRepository equipmentRepository;
     @Autowired CoffeeRepository coffeeRepository;
     @Autowired RecipeRepository recipeRepository;
-
-    @RequestMapping("/getByEmail")
-    public ResponseEntity<List<User>> getByEmail(String email){
-        return new ResponseEntity<>(repository.findByEmail(email), HttpStatus.OK);
-    }
-
     @RequestMapping("/login")
     public ResponseEntity<User> login(String email, String password){
         return new ResponseEntity<>(repository.login(email, password), HttpStatus.OK);
