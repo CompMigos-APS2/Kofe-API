@@ -4,6 +4,7 @@ import com.application.entities.Coffee;
 import com.application.entities.Equipment;
 import com.application.entities.Recipe;
 import com.application.entities.User;
+import com.application.filters.RecipeFilter;
 import com.application.repository.CoffeeRepository;
 
 import com.application.repository.EquipmentRepository;
@@ -32,8 +33,9 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    public RecipeHandler(RecipeRepository repository) {
+    public RecipeHandler(RecipeRepository repository, RecipeFilter filter) {
         super(repository);
+        this.filter = new RecipeFilter();
     }
     @RequestMapping("/getByTitle")
     public ResponseEntity<List<Recipe>> getByTitle(String title){

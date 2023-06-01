@@ -2,8 +2,10 @@ package com.application.handlers;
 
 import com.application.entities.Coffee;
 import com.application.entities.User;
+import com.application.filters.CoffeeFilter;
 import com.application.repository.CoffeeRepository;
 import com.application.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +23,11 @@ import java.util.UUID;
 public class CoffeeHandler extends GenericHandler<Coffee, CoffeeRepository> {
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
-    public CoffeeHandler(CoffeeRepository repository) {
+    public CoffeeHandler(CoffeeRepository repository, EntityManager em) {
         super(repository);
+        this.filter = new CoffeeFilter(em);
     }
     @RequestMapping("/getByName")
     public ResponseEntity<List<Coffee>> getByName(String name){

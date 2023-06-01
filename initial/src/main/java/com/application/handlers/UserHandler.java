@@ -4,6 +4,7 @@ import com.application.entities.Equipment;
 import com.application.entities.User;
 import com.application.entities.Coffee;
 import com.application.entities.Recipe;
+import com.application.filters.UserFilter;
 import com.application.repository.EquipmentRepository;
 import com.application.repository.RecipeRepository;
 import com.application.repository.UserRepository;
@@ -26,6 +27,7 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
     @Autowired
     public UserHandler(UserRepository repository) {
         super(repository);
+        this.filter = new UserFilter();
     }
     @Autowired EquipmentRepository equipmentRepository;
     @Autowired CoffeeRepository coffeeRepository;

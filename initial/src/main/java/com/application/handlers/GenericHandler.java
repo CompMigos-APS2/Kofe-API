@@ -1,5 +1,9 @@
 package com.application.handlers;
 
+import com.application.filters.Filter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
@@ -16,13 +20,22 @@ import java.util.UUID;
 @RestController
 public class GenericHandler<T, TRepository extends JpaRepository<T, UUID>>{
     public TRepository repository;
+    @PersistenceContext
+    protected EntityManager em;
+
+    protected Filter filter;
     @Autowired
     public GenericHandler(TRepository repository){
         this.repository = repository;
     }
-    @RequestMapping("/get")
-    public ResponseEntity<List<T>> get(){
-        return new ResponseEntity<>(repository.findAll(), HttpStatus.OK);
+
+    public void setFilter(Filter filter){
+        this.filter = filter;
+    }
+    @PostMapping("/get")
+    public ResponseEntity<List<T>> get(@RequestBody String jsonReq) throws JsonProcessingException {
+        System.out.println(jsonReq);
+        return new ResponseEntity<>(em.createQuery(filter.buildQuery(jsonReq)).getResultList(), HttpStatus.OK);
     }
 
     @PostMapping("/save")
