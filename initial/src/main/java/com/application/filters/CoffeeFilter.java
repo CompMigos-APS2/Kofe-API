@@ -24,9 +24,15 @@ public class CoffeeFilter implements Filter<Coffee> {
         var root = query.from(Coffee.class);
         query.select(root);
 
-        if(filterObj.getInternalId() != null) query.where(qb.equal(root.get("id"), filterObj.getInternalId()));
         if(filterObj.getName() != null) query.where(qb.equal(root.get("name"), filterObj.getName()));
+        if(filterObj.getInternalId() != null) query.where(qb.equal(root.get("id"), filterObj.getInternalId()));
+        if(filterObj.getRoastDate() != null) query.where(qb.equal(root.get("roastDate"), filterObj.getRoastDate()));
+        if(filterObj.getBrand() != null) query.where(qb.equal(root.get("brand"), filterObj.getBrand()));
+        if(filterObj.getSecondaryFlavours() != null) query.where(qb.equal(root.get("secondaryFlavours"), filterObj.getSecondaryFlavours()));
+        if(filterObj.getLocation() != null) query.where(qb.equal(root.get("location"), filterObj.getLocation()));
         if(filterObj.getSpecie() != null) query.where(qb.equal(root.get("specie"), filterObj.getSpecie()));
+        if(filterObj.getMethod() != null) query.where(qb.equal(root.get("method"), filterObj.getMethod()));
+        if(filterObj.getColor() != null) query.where(qb.equal(root.get("color"), filterObj.getColor()));
 
 
         return query;
