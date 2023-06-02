@@ -24,6 +24,11 @@ public class UserFilter implements Filter<User> {
         var root = query.from(User.class);
         query.select(root);
 
+        if(filterObj.getInternalId() != null) query.where(qb.equal(root.get("id"), filterObj.getInternalId()));
+        if(filterObj.getName() != null) query.where(qb.equal(root.get("name"), filterObj.getName()));
+        if(filterObj.getEmail() != null) query.where(qb.equal(root.get("email"), filterObj.getEmail()));
+        if(filterObj.getLogin() != null) query.where(qb.equal(root.get("login"), filterObj.getLogin()));
+
         return query;
     }
 }

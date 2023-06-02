@@ -11,6 +11,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="u_id")
     private UUID id;
+    private UUID internalId;
     private String name;
     private String email;
     private String login;
@@ -36,6 +37,7 @@ public class User {
     public UUID getId() {
         return id;
     }
+    public UUID getInternalId() { return internalId; }
     public void setId(UUID id) {
         this.id = id;
     }
