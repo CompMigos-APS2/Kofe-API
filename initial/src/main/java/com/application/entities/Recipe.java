@@ -14,6 +14,7 @@ public class Recipe {
 
     @Column(name="r_id")
     private UUID id;
+    private UUID internalId;
     private String title;
     private String extractionMethod;
     private int coffeeQty;
@@ -49,6 +50,7 @@ public class Recipe {
     public UUID getId() {
         return id;
     }
+    public UUID getInternalId() { return internalId; }
     public String getExtractionMethod() {
         return extractionMethod;
     }

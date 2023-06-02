@@ -4,13 +4,14 @@ import com.application.entities.Coffee;
 import com.application.entities.Equipment;
 import com.application.entities.Recipe;
 import com.application.entities.User;
+import com.application.filters.RecipeFilter;
 import com.application.repository.CoffeeRepository;
 
 import com.application.repository.EquipmentRepository;
 import com.application.repository.RecipeRepository;
 import com.application.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,17 +34,10 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    public RecipeHandler(RecipeRepository repository) {
+    public RecipeHandler(RecipeRepository repository, RecipeFilter filter, EntityManager em) {
         super(repository);
+        this.filter = new RecipeFilter(em);
     }
-    @RequestMapping("/getByTitle")
-    public ResponseEntity<List<Recipe>> getByTitle(String title){
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
-        
-        return new ResponseEntity<>(repository.findByTitle(title), headers, HttpStatus.OK);
-    }
-
     @PostMapping("/save")
     public ResponseEntity<Recipe> save(@RequestBody Recipe obj) {
         UUID userStringId = obj.getUserId();
@@ -72,10 +66,7 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
         UUID recipeId = savedRecipe.getId();
         user.get().updateRecipesIds(recipeId);
         userRepository.save(user.get());
-      
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
 
-        return new ResponseEntity<>(savedRecipe, headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(savedRecipe, HttpStatus.CREATED);
     }
 }

@@ -2,10 +2,11 @@ package com.application.handlers;
 
 import com.application.entities.Coffee;
 import com.application.entities.User;
+import com.application.filters.CoffeeFilter;
 import com.application.repository.CoffeeRepository;
 import com.application.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,30 +24,19 @@ public class CoffeeHandler extends GenericHandler<Coffee, CoffeeRepository> {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    public CoffeeHandler(CoffeeRepository repository) {
+    public CoffeeHandler(CoffeeRepository repository, EntityManager em) {
         super(repository);
+        this.filter = new CoffeeFilter(em);
     }
-    @RequestMapping("/getByName")
-    public ResponseEntity<List<Coffee>> getByName(String name){
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
-        
-        return new ResponseEntity<>(repository.findByName(name), headers, HttpStatus.OK);
-    }
-
     @RequestMapping("/deleteCoffeeById")
     public ResponseEntity<List<Object>> deleteCoffeeById(String id) {
-
         UUID formattedId = UUID.fromString(id);
         List<Object> recipeList = repository.findRecipesWithCoffee(formattedId);
         if(recipeList.size() == 0) {
             repository.deleteById(formattedId);
             return new ResponseEntity<>(recipeList, HttpStatus.NO_CONTENT);
         }
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
-
-        return new ResponseEntity<>(recipeList, headers, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(recipeList, HttpStatus.CONFLICT);
     }
 
     @PostMapping("/save")

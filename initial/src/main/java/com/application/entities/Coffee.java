@@ -12,6 +12,8 @@ public class Coffee {
     @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name="c_id")
     private UUID id;
+    @Transient
+    private UUID internalId;
     private String name;
     private Date roastDate;
     private String brand;
@@ -35,6 +37,9 @@ public class Coffee {
     }
     public void setId(UUID id) {
         this.id = id;
+    }
+    public UUID getInternalId() {
+        return internalId;
     }
     public String getName() {
         return name;
