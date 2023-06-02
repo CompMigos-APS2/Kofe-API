@@ -25,6 +25,10 @@ public class EquipmentFilter implements Filter<Equipment> {
         var root = query.from(Equipment.class);
         query.select(root);
 
+        if(filterObj.getInternalId() != null) query.where(qb.equal(root.get("id"), filterObj.getInternalId()));
+        if(filterObj.getBrand() != null) query.where(qb.equal(root.get("brand"), filterObj.getBrand()));
+        if(filterObj.getModel() != null) query.where(qb.equal(root.get("model"), filterObj.getModel()));
+        if(filterObj.getType() != null) query.where(qb.equal(root.get("type"), filterObj.getType()));
 
         return query;
     }

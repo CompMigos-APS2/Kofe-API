@@ -24,6 +24,16 @@ public class RecipeFilter implements Filter<Recipe> {
         var root = query.from(Recipe.class);
         query.select(root);
 
+        if(filterObj.getInternalId() != null) query.where(qb.equal(root.get("id"), filterObj.getInternalId()));
+        if(filterObj.getExtractionMethod() != null) query.where(qb.equal(root.get("extractionMethod"), filterObj.getExtractionMethod()));
+        if(filterObj.getTime() != null) query.where(qb.equal(root.get("time"), filterObj.getTime()));
+        if(filterObj.getPreparationMethod() != null) query.where(qb.equal(root.get("preparationMethod"), filterObj.getPreparationMethod()));
+        if(filterObj.getDate() != null) query.where(qb.equal(root.get("date"), filterObj.getDate()));
+        if(filterObj.getCoffeeIds() != null) query.where(qb.equal(root.get("coffeeIds"), filterObj.getCoffeeIds()));
+        if(filterObj.getTitle() != null) query.where(qb.equal(root.get("title"), filterObj.getTitle()));
+        if(filterObj.getEquipmentUsed() != null) query.where(qb.equal(root.get("equipmentUsed"), filterObj.getEquipmentUsed()));
+        if(filterObj.getCoffeeUsed() != null) query.where(qb.equal(root.get("coffeeUsed"), filterObj.getCoffeeUsed()));
+
         return query;
     }
 }

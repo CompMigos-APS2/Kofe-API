@@ -14,6 +14,7 @@ public class Equipment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="e_id")
     private UUID id;
+    private UUID internalId;
     private String brand;
     private String model;
     private EquipmentType type;
@@ -33,6 +34,7 @@ public class Equipment {
     public UUID getId() {
         return id;
     }
+    public UUID getInternalId() {return internalId;}
 
     public String getBrand() {
         return brand;
