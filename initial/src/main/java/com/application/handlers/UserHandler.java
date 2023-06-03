@@ -4,6 +4,7 @@ import com.application.entities.Equipment;
 import com.application.entities.User;
 import com.application.entities.Coffee;
 import com.application.entities.Recipe;
+import com.application.exceptions.NotFoundException;
 import com.application.filters.UserFilter;
 import com.application.repository.EquipmentRepository;
 import com.application.repository.RecipeRepository;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -63,10 +63,11 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
 
     private <T> ResponseEntity<List<T>> handleRelatedEntities(String id, IdGetter<UUID> idGetter, EntityFetcher<UUID, T> entityFetcher) {
         UUID formattedId = UUID.fromString(id);
-        Optional<User> user = repository.findById(formattedId);
-        if(user.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        List<UUID> entityIds = idGetter.getIds(user.get());
+
+        User user = repository.findById(formattedId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        List<UUID> entityIds = idGetter.getIds(user);
         List<T> entities = entityFetcher.fetchEntities(entityIds);
 
         return new ResponseEntity<>(entities, HttpStatus.OK);

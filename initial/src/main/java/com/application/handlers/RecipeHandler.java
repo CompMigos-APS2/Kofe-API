@@ -1,9 +1,9 @@
 package com.application.handlers;
 
-import com.application.entities.Coffee;
-import com.application.entities.Equipment;
 import com.application.entities.Recipe;
 import com.application.entities.User;
+
+import com.application.exceptions.NotFoundException;
 import com.application.filters.RecipeFilter;
 import com.application.repository.CoffeeRepository;
 
@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -40,12 +38,11 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
     }
     @PostMapping("/save")
     public ResponseEntity<Recipe> save(@RequestBody Recipe obj) {
-        UUID userStringId = obj.getUserId();
-        Optional<User> user = userRepository.findById(userStringId);
-        if(user.isEmpty()){
-            //retornar algm exception de not found aqui
-        }
-        obj.setUserId(userStringId);
+        UUID userId = obj.getUserId();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        obj.setUserId(userId);
 
         obj.getCoffeeIds().forEach(coffeeId -> coffeeRepository.findById(coffeeId)
                 .ifPresent(obj::addCoffeeUsed));
@@ -56,9 +53,10 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
         Recipe savedRecipe = repository.save(obj);
 
         UUID recipeId = savedRecipe.getId();
-        user.get().updateRecipesIds(recipeId);
-        userRepository.save(user.get());
+        user.updateRecipesIds(recipeId);
+        userRepository.save(user);
 
         return new ResponseEntity<>(savedRecipe, HttpStatus.CREATED);
     }
+
 }

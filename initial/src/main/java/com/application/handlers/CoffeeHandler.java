@@ -2,6 +2,7 @@ package com.application.handlers;
 
 import com.application.entities.Coffee;
 import com.application.entities.User;
+import com.application.exceptions.NotFoundException;
 import com.application.filters.CoffeeFilter;
 import com.application.repository.CoffeeRepository;
 import com.application.repository.UserRepository;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -42,17 +42,16 @@ public class CoffeeHandler extends GenericHandler<Coffee, CoffeeRepository> {
     @PostMapping("/save")
     public ResponseEntity<Coffee> save(@RequestBody Coffee obj) {
         UUID userId = obj.getUserId();
-        Optional<User> user = userRepository.findById(userId);
-        if(user.isEmpty()){
-            //retornar algm exception de not found aqui
-        }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
         obj.setUserId(userId);
         Coffee savedCoffee = repository.save(obj);
 
         UUID coffeeId = savedCoffee.getId();
-        user.get().updateCoffeesIds(coffeeId);
+        user.updateCoffeesIds(coffeeId);
 
-        userRepository.save(user.get());
+        userRepository.save(user);
 
         return new ResponseEntity<>(savedCoffee, HttpStatus.CREATED);
     }
