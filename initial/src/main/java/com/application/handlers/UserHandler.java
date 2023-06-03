@@ -41,12 +41,8 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
     @PostMapping("/save")
     public ResponseEntity<User> save(@RequestBody User obj) {
         List<UUID> equipmentIds = obj.getEquipmentIds();
-        for(UUID equipmentId : equipmentIds) {
-            Optional<Equipment> equipment = equipmentRepository.findById(equipmentId);
-            if(equipment.isEmpty())
-                continue;
-            obj.addEquipment(equipment.get());
-        }
+        obj.getEquipmentIds().forEach(equipmentId -> equipmentRepository.findById(equipmentId)
+                .ifPresent(obj::addEquipment));
         User savedUser = repository.save(obj);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
