@@ -33,10 +33,6 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
     @Autowired EquipmentRepository equipmentRepository;
     @Autowired CoffeeRepository coffeeRepository;
     @Autowired RecipeRepository recipeRepository;
-    @RequestMapping("/login")
-    public ResponseEntity<User> login(String email, String password){
-        return new ResponseEntity<>(repository.login(email, password), HttpStatus.OK);
-    }
 
     @PostMapping("/save")
     public ResponseEntity<User> save(@RequestBody User obj) {
