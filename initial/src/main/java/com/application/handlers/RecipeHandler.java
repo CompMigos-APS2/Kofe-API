@@ -47,20 +47,12 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
         }
         obj.setUserId(userStringId);
 
-        List<UUID> coffeeIds = obj.getCoffeeIds();
-        for(UUID coffeeId : coffeeIds) {
-            Optional<Coffee> coffee = coffeeRepository.findById(coffeeId);
-            if(coffee.isEmpty())
-                continue;
-            obj.addCoffeeUsed(coffee.get());
-        }
-        List<UUID> equipmentIds = obj.getEquipmentIds();
-        for(UUID equipmentId : equipmentIds) {
-            Optional<Equipment> equipment = equipmentRepository.findById(equipmentId);
-            if(equipment.isEmpty())
-                continue;
-            obj.addEquipmentUsed(equipment.get());
-        }
+        obj.getCoffeeIds().forEach(coffeeId -> coffeeRepository.findById(coffeeId)
+                .ifPresent(obj::addCoffeeUsed));
+
+        obj.getEquipmentIds().forEach(equipmentId -> equipmentRepository.findById(equipmentId)
+                .ifPresent(obj::addEquipmentUsed));
+
         Recipe savedRecipe = repository.save(obj);
 
         UUID recipeId = savedRecipe.getId();
