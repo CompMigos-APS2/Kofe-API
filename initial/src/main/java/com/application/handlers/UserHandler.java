@@ -4,6 +4,7 @@ import com.application.entities.Equipment;
 import com.application.entities.User;
 import com.application.entities.Coffee;
 import com.application.entities.Recipe;
+import com.application.exceptions.NotFoundException;
 import com.application.filters.UserFilter;
 import com.application.repository.EquipmentRepository;
 import com.application.repository.RecipeRepository;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -33,20 +33,12 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
     @Autowired EquipmentRepository equipmentRepository;
     @Autowired CoffeeRepository coffeeRepository;
     @Autowired RecipeRepository recipeRepository;
-    @RequestMapping("/login")
-    public ResponseEntity<User> login(String email, String password){
-        return new ResponseEntity<>(repository.login(email, password), HttpStatus.OK);
-    }
 
     @PostMapping("/save")
     public ResponseEntity<User> save(@RequestBody User obj) {
         List<UUID> equipmentIds = obj.getEquipmentIds();
-        for(UUID equipmentId : equipmentIds) {
-            Optional<Equipment> equipment = equipmentRepository.findById(equipmentId);
-            if(equipment.isEmpty())
-                continue;
-            obj.addEquipment(equipment.get());
-        }
+        obj.getEquipmentIds().forEach(equipmentId -> equipmentRepository.findById(equipmentId)
+                .ifPresent(obj::addEquipment));
         User savedUser = repository.save(obj);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
@@ -67,10 +59,11 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
 
     private <T> ResponseEntity<List<T>> handleRelatedEntities(String id, IdGetter<UUID> idGetter, EntityFetcher<UUID, T> entityFetcher) {
         UUID formattedId = UUID.fromString(id);
-        Optional<User> user = repository.findById(formattedId);
-        if(user.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        List<UUID> entityIds = idGetter.getIds(user.get());
+
+        User user = repository.findById(formattedId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        List<UUID> entityIds = idGetter.getIds(user);
         List<T> entities = entityFetcher.fetchEntities(entityIds);
 
         return new ResponseEntity<>(entities, HttpStatus.OK);
