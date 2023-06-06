@@ -14,6 +14,7 @@ public class Recipe {
 
     @Column(name="r_id")
     private UUID id;
+    @Transient
     private UUID internalId;
     private String title;
     private String extractionMethod;

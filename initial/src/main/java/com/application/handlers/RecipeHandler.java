@@ -46,14 +46,12 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
 
         obj.getCoffeeIds().forEach(coffeeId -> coffeeRepository.findById(coffeeId)
                 .ifPresent(obj::addCoffeeUsed));
-
         obj.getEquipmentIds().forEach(equipmentId -> equipmentRepository.findById(equipmentId)
                 .ifPresent(obj::addEquipmentUsed));
 
         Recipe savedRecipe = repository.save(obj);
 
-        UUID recipeId = savedRecipe.getId();
-        user.updateRecipesIds(recipeId);
+        user.updateRecipesIds(savedRecipe.getId());
         userRepository.save(user);
 
         return new ResponseEntity<>(savedRecipe, HttpStatus.CREATED);
