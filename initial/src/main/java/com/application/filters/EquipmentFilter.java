@@ -5,7 +5,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component("EquipmentFilter")
 public class EquipmentFilter implements Filter<Equipment> {
@@ -23,12 +27,14 @@ public class EquipmentFilter implements Filter<Equipment> {
         var qb = em.getCriteriaBuilder();
         var query = qb.createQuery(Equipment.class);
         var root = query.from(Equipment.class);
-        query.select(root);
+        List<Predicate> predicates = new ArrayList<>();
 
-        if(filterObj.getInternalId() != null) query.where(qb.equal(root.get("id"), filterObj.getInternalId()));
-        if(filterObj.getBrand() != null) query.where(qb.equal(root.get("brand"), filterObj.getBrand()));
-        if(filterObj.getModel() != null) query.where(qb.equal(root.get("model"), filterObj.getModel()));
-        if(filterObj.getType() != null) query.where(qb.equal(root.get("type"), filterObj.getType()));
+        if(filterObj.getInternalId() != null) predicates.add(qb.equal(root.get("id"), filterObj.getInternalId()));
+        if(filterObj.getBrand() != null) predicates.add(qb.equal(root.get("brand"), filterObj.getBrand()));
+        if(filterObj.getModel() != null) predicates.add(qb.equal(root.get("model"), filterObj.getModel()));
+        if(filterObj.getType() != null) predicates.add(qb.equal(root.get("type"), filterObj.getType()));
+
+        query.select(root).where(qb.and(predicates.toArray(new Predicate[0])));
 
         return query;
     }

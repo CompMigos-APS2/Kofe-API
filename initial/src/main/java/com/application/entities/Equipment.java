@@ -14,6 +14,7 @@ public class Equipment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="e_id")
     private UUID id;
+    @Transient
     private UUID internalId;
     private String brand;
     private String model;

@@ -5,7 +5,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component("UserFilter")
 public class UserFilter implements Filter<User> {
@@ -22,12 +26,14 @@ public class UserFilter implements Filter<User> {
         var qb = em.getCriteriaBuilder();
         var query = qb.createQuery(User.class);
         var root = query.from(User.class);
-        query.select(root);
+        List<Predicate> predicates = new ArrayList<>();
 
-        if(filterObj.getInternalId() != null) query.where(qb.equal(root.get("id"), filterObj.getInternalId()));
-        if(filterObj.getName() != null) query.where(qb.equal(root.get("name"), filterObj.getName()));
-        if(filterObj.getEmail() != null) query.where(qb.equal(root.get("email"), filterObj.getEmail()));
-        if(filterObj.getLogin() != null) query.where(qb.equal(root.get("login"), filterObj.getLogin()));
+        if(filterObj.getAuthId() != null) predicates.add(qb.equal(root.get("id"), filterObj.getAuthId()));
+        if(filterObj.getName() != null) predicates.add(qb.equal(root.get("name"), filterObj.getName()));
+        if(filterObj.getEmail() != null) predicates.add(qb.equal(root.get("email"), filterObj.getEmail()));
+        if(filterObj.getLogin() != null) predicates.add(qb.equal(root.get("login"), filterObj.getLogin()));
+
+        query.select(root).where(qb.and(predicates.toArray(new Predicate[0])));
 
         return query;
     }
