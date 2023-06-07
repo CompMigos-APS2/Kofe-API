@@ -16,7 +16,7 @@ public class User {
     private String authId;
     @JsonIgnore
     @Transient
-    private boolean updateFlag = false;
+    private boolean updateFlag;
     private String name;
     @Email(message = "Email should be valid")
     @Column(unique=true)
@@ -40,6 +40,7 @@ public class User {
 
     public User(){
     id = UUID.randomUUID();
+    updateFlag = false;
     }
 
     public boolean hasToUpdate(){ return updateFlag; }
@@ -100,9 +101,11 @@ public class User {
         this.equipments = equipments;
     }
     public void addEquipment(Equipment equipment) {
+        updateFlag = true;
         equipments.add(equipment);
     }
     public void removeEquipment(Equipment equipment) {
+        updateFlag = true;
         equipments.remove(equipment);
     }
 
@@ -128,6 +131,7 @@ public class User {
         for(UUID recipe : recipesIds)
             if(recipe.equals(id))
                 return;
+        updateFlag = true;
         recipesIds.add(id);
     }
 }

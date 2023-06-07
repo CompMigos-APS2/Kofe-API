@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -43,7 +42,7 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
         obj.getEquipmentIds().forEach(equipmentId -> equipmentRepository.findById(equipmentId)
                 .ifPresent(obj::addEquipment));
         User savedUser = repository.save(obj);
-        statsHandler.setUserUpdated(true);
+        statsHandler.setUserListUpdated(true);
 
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }

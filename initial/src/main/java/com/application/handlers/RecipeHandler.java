@@ -32,6 +32,8 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private StatsHandler statsHandler;
+    @Autowired
     public RecipeHandler(RecipeRepository repository, RecipeFilter filter, EntityManager em) {
         super(repository);
         this.filter = new RecipeFilter(em);
@@ -50,8 +52,9 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
                 .ifPresent(obj::addEquipmentUsed));
 
         Recipe savedRecipe = repository.save(obj);
-
         user.updateRecipesIds(savedRecipe.getId());
+
+        statsHandler.setUserUpdated(userId);
         userRepository.save(user);
 
         return new ResponseEntity<>(savedRecipe, HttpStatus.CREATED);

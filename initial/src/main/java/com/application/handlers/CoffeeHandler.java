@@ -1,6 +1,7 @@
 package com.application.handlers;
 
 import com.application.entities.Coffee;
+import com.application.entities.Stats;
 import com.application.entities.User;
 import com.application.exceptions.NotFoundException;
 import com.application.filters.CoffeeFilter;
@@ -23,10 +24,12 @@ import java.util.UUID;
 public class CoffeeHandler extends GenericHandler<Coffee, CoffeeRepository> {
     @Autowired
     private UserRepository userRepository;
+    private StatsHandler statsHandler;
     @Autowired
-    public CoffeeHandler(CoffeeRepository repository, EntityManager em) {
+    public CoffeeHandler(CoffeeRepository repository, EntityManager em, StatsHandler sh) {
         super(repository);
         this.filter = new CoffeeFilter(em);
+        this.statsHandler = sh;
     }
     @RequestMapping("/deleteCoffeeById")
     public ResponseEntity<List<Object>> deleteCoffeeById(String id) {
@@ -51,6 +54,7 @@ public class CoffeeHandler extends GenericHandler<Coffee, CoffeeRepository> {
         UUID coffeeId = savedCoffee.getId();
         user.updateCoffeesIds(coffeeId);
 
+        statsHandler.setUserUpdated(user.getId());
         userRepository.save(user);
 
         return new ResponseEntity<>(savedCoffee, HttpStatus.CREATED);
