@@ -14,9 +14,6 @@ public class User {
     private UUID id;
     @Column(unique=true)
     private String authId;
-    @JsonIgnore
-    @Transient
-    private boolean updateFlag;
     private String name;
     @Email(message = "Email should be valid")
     @Column(unique=true)
@@ -28,7 +25,6 @@ public class User {
     private List<UUID> equipmentIds = new ArrayList<>();
     private List<UUID> coffeesIds = new ArrayList<>();
     private List<UUID> recipesIds = new ArrayList<>();
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinTable(
@@ -39,99 +35,45 @@ public class User {
     private Set<Equipment> equipments = new HashSet<>();
 
     public User(){
-    id = UUID.randomUUID();
-    updateFlag = false;
+        id = UUID.randomUUID();
     }
 
-    public boolean hasToUpdate(){ return updateFlag; }
-    public UUID getId() {
-        return id;
-    }
+    public UUID getId() { return id; }
     public String getAuthId() { return authId; }
-    public void setId(UUID id) {
-        this.id = id;
-    }
+    public void setId(UUID id) { this.id = id; }
 
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public String getLogin() {
-        return login;
-    }
-    public void setLogin(String login) {
-        this.login = login;
-    }
-    public String getPassword() {
-        return password;
-    }
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    public Date getBirthDate() {
-        return birthDate;
-    }
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
-    }
-    public String getAddress() {
-        return address;
-    }
-    public void setAddress(String address) {
-        this.address = address;
-    }
-    public List<UUID> getEquipmentIds() {
-        return equipmentIds;
-    }
-    public void setEquipmentIds(List<UUID> equipmentIds) {
-        this.equipmentIds = equipmentIds;
-    }
-    public Set<Equipment> getEquipments() {
-        return equipments;
-    }
-    public void setEquipments(Set<Equipment> equipments) {
-        this.equipments = equipments;
-    }
-    public void addEquipment(Equipment equipment) {
-        updateFlag = true;
-        equipments.add(equipment);
-    }
-    public void removeEquipment(Equipment equipment) {
-        updateFlag = true;
-        equipments.remove(equipment);
-    }
-
-    public List<UUID> getCoffeesIds() {
-        return coffeesIds;
-    }
-    public void setCoffeesIds(List<UUID> coffeesIds) {
-        this.coffeesIds = coffeesIds;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getLogin() { return login; }
+    public void setLogin(String login) { this.login = login; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+    public Date getBirthDate() { return birthDate; }
+    public void setBirthDate(Date birthDate) { this.birthDate = birthDate; }
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
+    public List<UUID> getEquipmentIds() { return equipmentIds; }
+    public void setEquipmentIds(List<UUID> equipmentIds) { this.equipmentIds = equipmentIds; }
+    public Set<Equipment> getEquipments() { return equipments; }
+    public void setEquipments(Set<Equipment> equipments) { this.equipments = equipments; }
+    public void addEquipment(Equipment equipment) { equipments.add(equipment); }
+    public void removeEquipment(Equipment equipment) { equipments.remove(equipment); }
+    public List<UUID> getCoffeesIds() { return coffeesIds; }
+    public void setCoffeesIds(List<UUID> coffeesIds) { this.coffeesIds = coffeesIds; }
     public void updateCoffeesIds(UUID id){
         for(UUID coffee : coffeesIds)
             if(coffee.equals(id))
                 return;
         coffeesIds.add(id);
     }
-    public List<UUID> getRecipesIds() {
-        return recipesIds;
-    }
-    public void setRecipesIds(List<UUID> recipesIds) {
-        this.recipesIds = recipesIds;
-    }
+    public List<UUID> getRecipesIds() { return recipesIds; }
+    public void setRecipesIds(List<UUID> recipesIds) { this.recipesIds = recipesIds; }
     public void updateRecipesIds(UUID id){
         for(UUID recipe : recipesIds)
             if(recipe.equals(id))
                 return;
-        updateFlag = true;
         recipesIds.add(id);
     }
 }
