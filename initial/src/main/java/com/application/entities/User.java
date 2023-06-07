@@ -120,7 +120,6 @@ public class User {
             if(coffee.equals(id))
                 return;
         coffeesIds.add(id);
-        System.out.println(this.id + " " + coffeesIds.size());
     }
     public List<UUID> getRecipesIds() {
         return recipesIds;

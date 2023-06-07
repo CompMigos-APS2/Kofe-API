@@ -55,7 +55,6 @@ public class StatsHandler {
         monitoredAccounts.forEach((key, value) -> {
             if(!value.hasToUpdate()) return;
 
-            System.out.println("updating stat");
             value.calculate(userRepository.findById(key).get());
             value.setUpdated(false);
         });
@@ -68,7 +67,6 @@ public class StatsHandler {
         var activeUsers = userRepository.findAll();
         for(var user : activeUsers){
             if(!monitoredAccounts.containsKey(user.getId())){
-                System.out.println("adding user");
                 var stats = new Stats();
                 stats.calculate(user);
                 monitoredAccounts.put(user.getId(), stats);
