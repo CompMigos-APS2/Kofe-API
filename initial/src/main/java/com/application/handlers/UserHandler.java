@@ -42,9 +42,11 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
     @PostMapping("/save")
     public ResponseEntity<User> save(@RequestBody User obj) {
         List<UUID> equipmentIds = obj.getEquipmentIds();
-        obj.getEquipmentIds().forEach(equipmentId -> equipmentRepository.findById(equipmentId)
-                .ifPresent(obj::addEquipment));
-
+        equipmentIds.forEach(equipmentId -> equipmentRepository.findById(equipmentId)
+                .ifPresentOrElse(
+                        equipment -> {obj.addEquipment(equipment);},
+                        () -> { throw new NotFoundException("Equipment not found"); }
+                ));
         try {
             User savedUser = repository.save(obj);
             statsHandler.setUserUpdated(true);
