@@ -30,9 +30,13 @@ public class StatsHandler {
     @Autowired
     private UserRepository userRepository;
     private HashMap<UUID, Stats> monitoredAccounts = new HashMap<>();
-    private boolean hasToUpdateUser = false;
-    public void setUserUpdated(boolean flag){
-        hasToUpdateUser = flag;
+    private boolean hasToUpdateUserList = false;
+    public void setUserListUpdated(boolean flag){
+        hasToUpdateUserList = flag;
+    }
+    public void setUserUpdated(UUID id){
+        var stat = monitoredAccounts.get(id);
+        stat.setUpdated(true);
     }
 
     @Autowired
@@ -43,35 +47,39 @@ public class StatsHandler {
 
         var activeUsers = this.userRepository.findAll();
         for(var user : activeUsers){
-            var stats = new Stats(user);
-            stats.calculate();
+            var stats = new Stats();
+            stats.calculate(user);
             monitoredAccounts.put(user.getId(), stats);
         }
     }
     @RequestMapping("/get")
     public ResponseEntity<Stats> get(String id){
         return new ResponseEntity<>(monitoredAccounts.get(UUID.fromString(id)), HttpStatus.ACCEPTED);
-
     }
     @Scheduled(fixedRate = 5000)
     private void calculate(){
         monitoredAccounts.forEach((key, value) -> {
-            if(value.hasToUpdate()) value.calculate();
+            if(!value.hasToUpdate()) return;
+
+            System.out.println("updating stat");
+            value.calculate(userRepository.findById(key).get());
+            value.setUpdated(false);
         });
     }
 
     @Scheduled(fixedRate = 1000)
     private void pollUsers(){
-        if(!hasToUpdateUser) return;
+        if(!hasToUpdateUserList) return;
 
         var activeUsers = userRepository.findAll();
         for(var user : activeUsers){
             if(!monitoredAccounts.containsKey(user.getId())){
                 System.out.println("adding user");
-                var stats = new Stats(user);
+                var stats = new Stats();
+                stats.calculate(user);
                 monitoredAccounts.put(user.getId(), stats);
             }
         }
-        hasToUpdateUser = false;
+        hasToUpdateUserList = false;
     }
 }

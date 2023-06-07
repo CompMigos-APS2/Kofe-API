@@ -43,7 +43,7 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
         obj.getEquipmentIds().forEach(equipmentId -> equipmentRepository.findById(equipmentId)
                 .ifPresent(obj::addEquipment));
         User savedUser = repository.save(obj);
-        statsHandler.setUserUpdated(true);
+        statsHandler.setUserListUpdated(true);
 
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
