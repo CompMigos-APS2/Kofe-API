@@ -44,8 +44,8 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
         List<UUID> equipmentIds = obj.getEquipmentIds();
         equipmentIds.forEach(equipmentId -> equipmentRepository.findById(equipmentId)
                 .ifPresentOrElse(
-                        equipment -> {obj.addEquipment(equipment);},
-                        () -> { throw new NotFoundException("Equipment not found"); }
+                    equipment -> {obj.addEquipment(equipment);},
+                    () -> { throw new NotFoundException("Equipment not found"); }
                 ));
         try {
             User savedUser = repository.save(obj);
