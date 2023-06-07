@@ -37,6 +37,7 @@ public class CoffeeFilter implements Filter<Coffee> {
         if(filterObj.getSpecie() != null) predicates.add(qb.equal(root.get("specie"), filterObj.getSpecie()));
         if(filterObj.getMethod() != null) predicates.add(qb.equal(root.get("method"), filterObj.getMethod()));
         if(filterObj.getColor() != null) predicates.add(qb.equal(root.get("color"), filterObj.getColor()));
+        if(filterObj.getUserId() != null) predicates.add(qb.equal(root.get("userId"), filterObj.getUserId()));
 
         query.select(root).where(qb.and(predicates.toArray(new Predicate[0])));
 
