@@ -15,7 +15,6 @@ public class User {
     @Column(name="u_id")
     private UUID id;
     @Column(unique=true)
-    @JsonIgnore
     private String authId;
     @JsonIgnore
     @Transient
