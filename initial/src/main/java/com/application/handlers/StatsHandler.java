@@ -1,19 +1,13 @@
 package com.application.handlers;
 
 import com.application.entities.Stats;
-import com.application.entities.User;
 import com.application.repository.CoffeeRepository;
 import com.application.repository.RecipeRepository;
 import com.application.repository.UserRepository;
-import org.hibernate.HibernateException;
-import org.hibernate.event.spi.PostInsertEvent;
-import org.hibernate.event.spi.PostInsertEventListener;
-import org.hibernate.persister.entity.EntityPersister;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
