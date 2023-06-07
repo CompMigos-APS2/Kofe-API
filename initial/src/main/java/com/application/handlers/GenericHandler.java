@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -41,6 +42,15 @@ public class GenericHandler<T, TRepository extends JpaRepository<T, UUID>>{
     @PostMapping("/save")
     public ResponseEntity<T> save(@RequestBody T obj){
         return new ResponseEntity<>(repository.save(obj), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/batchSave")
+    public List<ResponseEntity<T>> batchSave(@RequestBody List<T> objList){
+        List<ResponseEntity<T>> responses = new ArrayList<>();
+        for(var obj : objList){
+            responses.add(save(obj));
+        }
+        return responses;
     }
 
     @RequestMapping("/getById")
