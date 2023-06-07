@@ -24,8 +24,6 @@ public class User {
     @NotBlank(message = "Email is mandatory")
     @Column(unique=true)
     private String email;
-    private String login;
-    private String password;
     private Date birthDate;
     private String address;
     private List<UUID> equipmentIds = new ArrayList<>();
@@ -65,18 +63,6 @@ public class User {
     }
     public void setEmail(String email) {
         this.email = email;
-    }
-    public String getLogin() {
-        return login;
-    }
-    public void setLogin(String login) {
-        this.login = login;
-    }
-    public String getPassword() {
-        return password;
-    }
-    public void setPassword(String password) {
-        this.password = password;
     }
     public Date getBirthDate() {
         return birthDate;
