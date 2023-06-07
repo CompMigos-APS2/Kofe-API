@@ -6,15 +6,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
-import org.hibernate.query.sqm.tree.domain.SqmBasicValuedSimplePath;
-import org.hibernate.query.sqm.tree.domain.SqmPluralValuedSimplePath;
 import org.springframework.stereotype.Component;
-
 import java.util.*;
 
 @Component("RecipeFilter")
 public class RecipeFilter implements Filter<Recipe> {
-    private EntityManager em;
+    private final EntityManager em;
+
     public RecipeFilter(EntityManager em){
         this.em = em;
     }
@@ -28,7 +26,6 @@ public class RecipeFilter implements Filter<Recipe> {
         var qb = em.getCriteriaBuilder();
         var query = qb.createQuery(Recipe.class);
         var root = query.from(Recipe.class);
-
 
         if(filterObj.getInternalId() != null) predicates.add(qb.equal(root.get("id"), filterObj.getInternalId()));
         if(filterObj.getExtractionMethod() != null) predicates.add(qb.equal(root.get("extractionMethod"), filterObj.getExtractionMethod()));
