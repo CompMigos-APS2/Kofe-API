@@ -2,6 +2,7 @@ package com.application.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import java.util.*;
 
 @Entity
@@ -11,8 +12,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="u_id")
     private UUID id;
+    @Column(unique=true)
     private String authId;
     private String name;
+    @Email(message = "Email should be valid")
+    @Column(unique=true)
     private String email;
     private String login;
     private String password;

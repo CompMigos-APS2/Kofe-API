@@ -28,7 +28,7 @@ public class UserFilter implements Filter<User> {
         var root = query.from(User.class);
         List<Predicate> predicates = new ArrayList<>();
 
-        if(filterObj.getAuthId() != null) predicates.add(qb.equal(root.get("id"), filterObj.getAuthId()));
+        if(filterObj.getAuthId() != null) predicates.add(qb.equal(root.get("authId"), filterObj.getAuthId()));
         if(filterObj.getName() != null) predicates.add(qb.equal(root.get("name"), filterObj.getName()));
         if(filterObj.getEmail() != null) predicates.add(qb.equal(root.get("email"), filterObj.getEmail()));
         if(filterObj.getLogin() != null) predicates.add(qb.equal(root.get("login"), filterObj.getLogin()));

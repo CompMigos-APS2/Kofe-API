@@ -55,5 +55,4 @@ public class CoffeeHandler extends GenericHandler<Coffee, CoffeeRepository> {
 
         return new ResponseEntity<>(savedCoffee, HttpStatus.CREATED);
     }
-
 }

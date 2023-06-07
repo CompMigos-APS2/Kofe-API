@@ -3,6 +3,7 @@ package com.application.entities;
 import com.application.enums.RoastColor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Past;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -16,6 +17,7 @@ public class Coffee {
     @Transient
     private UUID internalId;
     private String name;
+    @Past(message = "Roast date must be in the past")
     private Date roastDate;
     private String brand;
     private String secondaryFlavours;
