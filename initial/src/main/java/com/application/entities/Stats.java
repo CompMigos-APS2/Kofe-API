@@ -10,7 +10,7 @@ public class Stats {
 
     public int getCoffeeQty(){ return coffeeQty; }
     public void setCoffeeQty(int qty) { this.coffeeQty = qty; }
-    public int getRecipeQtyQty(){ return recipeQty; }
+    public int getRecipeQty(){ return recipeQty; }
     public void setRecipeQty(int qty) { this.recipeQty = qty; }
     public int getEquipmentQty(){ return equipmentQty; }
     public void setEquipmentQtyQty(int qty) { this.equipmentQty = qty; }
