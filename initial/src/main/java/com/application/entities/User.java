@@ -11,7 +11,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="u_id")
     private UUID id;
+    @JsonIgnore
     private String authId;
+    @JsonIgnore
+    @Transient
+    private boolean updateFlag = false;
     private String name;
     private String email;
     private String login;
@@ -34,6 +38,8 @@ public class User {
     public User(){
     id = UUID.randomUUID();
     }
+
+    public boolean hasToUpdate(){ return updateFlag; }
     public UUID getId() {
         return id;
     }

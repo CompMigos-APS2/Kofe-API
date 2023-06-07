@@ -33,6 +33,7 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
     @Autowired EquipmentRepository equipmentRepository;
     @Autowired CoffeeRepository coffeeRepository;
     @Autowired RecipeRepository recipeRepository;
+    @Autowired StatsHandler statsHandler;
 
     @PostMapping("/save")
     public ResponseEntity<User> save(@RequestBody User obj) {
@@ -40,6 +41,8 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
         obj.getEquipmentIds().forEach(equipmentId -> equipmentRepository.findById(equipmentId)
                 .ifPresent(obj::addEquipment));
         User savedUser = repository.save(obj);
+        statsHandler.setUserUpdated(true);
+
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
     @RequestMapping("/getCoffees")
