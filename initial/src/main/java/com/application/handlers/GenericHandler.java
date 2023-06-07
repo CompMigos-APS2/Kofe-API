@@ -20,6 +20,7 @@ import java.util.UUID;
 @RestController
 public class GenericHandler<T, TRepository extends JpaRepository<T, UUID>>{
     public TRepository repository;
+
     @PersistenceContext
     protected EntityManager em;
 

@@ -13,7 +13,11 @@ public class User {
     @Column(name="u_id")
     private UUID id;
     @Column(unique=true)
+    @JsonIgnore
     private String authId;
+    @JsonIgnore
+    @Transient
+    private boolean updateFlag = false;
     private String name;
     @Email(message = "Email should be valid")
     @Column(unique=true)
@@ -38,6 +42,8 @@ public class User {
     public User(){
     id = UUID.randomUUID();
     }
+
+    public boolean hasToUpdate(){ return updateFlag; }
     public UUID getId() {
         return id;
     }
