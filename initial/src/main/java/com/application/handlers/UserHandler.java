@@ -12,11 +12,12 @@ import com.application.repository.UserRepository;
 import com.application.repository.CoffeeRepository;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,16 +38,22 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
     @Autowired RecipeRepository recipeRepository;
     @Autowired StatsHandler statsHandler;
 
+    @Validated
     @PostMapping("/save")
     public ResponseEntity<User> save(@RequestBody User obj) {
         List<UUID> equipmentIds = obj.getEquipmentIds();
         obj.getEquipmentIds().forEach(equipmentId -> equipmentRepository.findById(equipmentId)
                 .ifPresent(obj::addEquipment));
-        User savedUser = repository.save(obj);
-        statsHandler.setUserUpdated(true);
 
-        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+        try {
+            User savedUser = repository.save(obj);
+            statsHandler.setUserUpdated(true);
+            return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException("Constraint violation occurred");
+        }
     }
+
     @RequestMapping("/getCoffees")
     public ResponseEntity<List<Coffee>> getCoffees(String id){
         return handleRelatedEntities(id, User::getCoffeesIds, coffeeRepository::findAllById);

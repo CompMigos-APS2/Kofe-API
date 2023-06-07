@@ -3,6 +3,8 @@ package com.application.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.*;
 
 @Entity
@@ -20,6 +22,7 @@ public class User {
     private boolean updateFlag = false;
     private String name;
     @Email(message = "Email should be valid")
+    @NotBlank(message = "Email is mandatory")
     @Column(unique=true)
     private String email;
     private String login;
