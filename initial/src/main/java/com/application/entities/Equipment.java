@@ -3,6 +3,7 @@ package com.application.entities;
 import com.application.enums.EquipmentType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,7 +17,9 @@ public class Equipment {
     private UUID id;
     @Transient
     private UUID internalId;
+    @NotBlank(message = "Brand is mandatory")
     private String brand;
+    @NotBlank(message = "Model is mandatory")
     private String model;
     private EquipmentType type;
 
