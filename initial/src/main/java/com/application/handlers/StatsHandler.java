@@ -44,12 +44,13 @@ public class StatsHandler {
         var activeUsers = this.userRepository.findAll();
         for(var user : activeUsers){
             var stats = new Stats(user);
+            stats.calculate();
             monitoredAccounts.put(user.getId(), stats);
         }
     }
-    @PostMapping("/get")
-    public ResponseEntity<Stats> get(@RequestBody UUID id){
-        return new ResponseEntity<>(monitoredAccounts.get(id), HttpStatus.ACCEPTED);
+    @RequestMapping("/get")
+    public ResponseEntity<Stats> get(String id){
+        return new ResponseEntity<>(monitoredAccounts.get(UUID.fromString(id)), HttpStatus.ACCEPTED);
 
     }
     @Scheduled(fixedRate = 5000)

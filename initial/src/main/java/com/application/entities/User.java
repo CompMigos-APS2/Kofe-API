@@ -100,9 +100,11 @@ public class User {
         this.equipments = equipments;
     }
     public void addEquipment(Equipment equipment) {
+        updateFlag = true;
         equipments.add(equipment);
     }
     public void removeEquipment(Equipment equipment) {
+        updateFlag = true;
         equipments.remove(equipment);
     }
 
@@ -116,6 +118,7 @@ public class User {
         for(UUID coffee : coffeesIds)
             if(coffee.equals(id))
                 return;
+        updateFlag = true;
         coffeesIds.add(id);
     }
     public List<UUID> getRecipesIds() {
@@ -128,6 +131,7 @@ public class User {
         for(UUID recipe : recipesIds)
             if(recipe.equals(id))
                 return;
+        updateFlag = true;
         recipesIds.add(id);
     }
 }
