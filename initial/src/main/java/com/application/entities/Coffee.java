@@ -1,5 +1,6 @@
 package com.application.entities;
 
+import com.application.enums.RoastColor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -21,7 +22,7 @@ public class Coffee {
     private String location;
     private String specie;
     private String method;
-    private String color; //TODO: implementar restrição de domínio
+    private RoastColor color;
     private LocalDateTime modificationDateTime = LocalDateTime.now();
 
     @ManyToMany(mappedBy = "coffeeUsed")
@@ -83,10 +84,10 @@ public class Coffee {
     public void setMethod(String method) {
         this.method = method;
     }
-    public String getColor() {
+    public RoastColor getColor() {
         return color;
     }
-    public void setColor(String color) {
+    public void setColor(RoastColor color) {
         this.color = color;
     }
     public LocalDateTime getModificationDateTime() {
