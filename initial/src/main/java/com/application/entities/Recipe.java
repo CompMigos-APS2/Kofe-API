@@ -6,6 +6,11 @@ import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Past;
+
 @Entity
 
 public class Recipe {
@@ -16,13 +21,19 @@ public class Recipe {
     private UUID id;
     @Transient
     private UUID internalId;
+    @NotBlank(message = "Title is mandatory")
     private String title;
     private String extractionMethod;
+    @Min(value = 0, message = "Coffee quantity must be greater than or equal to 0")
     private int coffeeQty;
+    @Min(value = 0, message = "Water quantity must be greater than or equal to 0")
     private int waterQty;
     private Time time;
     private String preparationMethod;
+    @Past(message = "Date must be in the past")
     private Date date;
+    @Min(value = 0, message = "Rating must be greater than or equal to 0")
+    @Max(value = 10, message = "Rating must be less than or equal to 10")
     private float rating;
     private LocalDateTime modificationDateTime = LocalDateTime.now();
     private List<String> commentsList;

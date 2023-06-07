@@ -1,6 +1,5 @@
 package com.application.repository;
 
-import java.util.List;
 import java.util.UUID;
 
 import com.application.entities.User;
