@@ -30,7 +30,7 @@ public class StatsHandler {
     }
     public void setUserUpdated(UUID id){
         var stat = monitoredAccounts.get(id);
-        stat.setUpdated(true);
+        stat.setUpdateFlag(true);
     }
 
     @Autowired
@@ -56,7 +56,7 @@ public class StatsHandler {
             if(!value.hasToUpdate()) return;
 
             value.calculate(userRepository.findById(key).get());
-            value.setUpdated(false);
+            value.setUpdateFlag(false);
         });
     }
 

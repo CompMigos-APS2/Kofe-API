@@ -1,7 +1,5 @@
 package com.application.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class Stats {
     private int coffeeQty;
     private int recipeQty;
@@ -14,9 +12,7 @@ public class Stats {
     public void setRecipeQty(int qty) { this.recipeQty = qty; }
     public int getEquipmentQty(){ return equipmentQty; }
     public void setEquipmentQtyQty(int qty) { this.equipmentQty = qty; }
-    public void setUpdated(boolean flag){
-        updateFlag = flag;
-    }
+    public void setUpdateFlag(boolean flag){ updateFlag = flag; }
     public boolean hasToUpdate(){ return updateFlag; }
 
     public void calculate(User newUserData){
