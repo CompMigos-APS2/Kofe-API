@@ -1,4 +1,4 @@
-package com.application.entities;
+package com.application.enums;
 
 public enum EquipmentType {
     Scale,

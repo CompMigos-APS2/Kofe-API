@@ -1,6 +1,5 @@
 package com.application.repository;
 
-import java.util.List;
 import java.util.UUID;
 
 import com.application.entities.User;
@@ -11,9 +10,5 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource(collectionResourceRel = "user", path = "user")
 public interface UserRepository extends JpaRepository<User, UUID> {
-    List<User> findByEmail(@Param("email") String email);
-
-    @Query("SELECT u FROM User u WHERE u.email = :email AND u.password = :password")
-    User login(@Param("email") String email, @Param("password") String password);
 
 }

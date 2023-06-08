@@ -1,25 +1,24 @@
 package com.application.handlers;
 
-import com.application.entities.Coffee;
-import com.application.entities.Equipment;
 import com.application.entities.Recipe;
 import com.application.entities.User;
-import com.application.repository.CoffeeRepository;
 
+import com.application.exceptions.NotFoundException;
+import com.application.filters.RecipeFilter;
+import com.application.repository.CoffeeRepository;
 import com.application.repository.EquipmentRepository;
 import com.application.repository.RecipeRepository;
 import com.application.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -33,49 +32,39 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    public RecipeHandler(RecipeRepository repository) {
-        super(repository);
-    }
-    @RequestMapping("/getByTitle")
-    public ResponseEntity<List<Recipe>> getByTitle(String title){
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
-        
-        return new ResponseEntity<>(repository.findByTitle(title), headers, HttpStatus.OK);
-    }
+    private StatsHandler statsHandler;
 
+    @Autowired
+    public RecipeHandler(RecipeRepository repository, RecipeFilter filter, EntityManager em) {
+        super(repository);
+        this.filter = new RecipeFilter(em);
+    }
+    @Validated
     @PostMapping("/save")
     public ResponseEntity<Recipe> save(@RequestBody Recipe obj) {
-        UUID userStringId = obj.getUserId();
-        Optional<User> user = userRepository.findById(userStringId);
-        if(user.isEmpty()){
-            //retornar algm exception de not found aqui
-        }
-        obj.setUserId(userStringId);
+        UUID userId = obj.getUserId();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
-        List<UUID> coffeeIds = obj.getCoffeeIds();
-        for(UUID coffeeId : coffeeIds) {
-            Optional<Coffee> coffee = coffeeRepository.findById(coffeeId);
-            if(coffee.isEmpty())
-                continue;
-            obj.addCoffeeUsed(coffee.get());
-        }
-        List<UUID> equipmentIds = obj.getEquipmentIds();
-        for(UUID equipmentId : equipmentIds) {
-            Optional<Equipment> equipment = equipmentRepository.findById(equipmentId);
-            if(equipment.isEmpty())
-                continue;
-            obj.addEquipmentUsed(equipment.get());
-        }
+
+        obj.getCoffeeIds().forEach(coffeeId -> coffeeRepository.findById(coffeeId)
+                .ifPresentOrElse(
+                    obj::addCoffeeUsed,
+                    () -> { throw new NotFoundException("Coffee not found"); }
+                ));
+        obj.getEquipmentIds().forEach(equipmentId -> equipmentRepository.findById(equipmentId)
+                .ifPresentOrElse(
+                    obj::addEquipmentUsed,
+                    () -> { throw new NotFoundException("Equipment not found"); }
+                ));
+
         Recipe savedRecipe = repository.save(obj);
 
-        UUID recipeId = savedRecipe.getId();
-        user.get().updateRecipesIds(recipeId);
-        userRepository.save(user.get());
-      
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
+        user.updateRecipesIds(savedRecipe.getId());
 
-        return new ResponseEntity<>(savedRecipe, headers, HttpStatus.CREATED);
+        statsHandler.setUserUpdated(userId);
+        userRepository.save(user);
+
+        return new ResponseEntity<>(savedRecipe, HttpStatus.CREATED);
     }
 }

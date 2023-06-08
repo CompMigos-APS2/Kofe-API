@@ -4,101 +4,83 @@ import com.application.entities.Equipment;
 import com.application.entities.User;
 import com.application.entities.Coffee;
 import com.application.entities.Recipe;
+import com.application.exceptions.NotFoundException;
+import com.application.filters.UserFilter;
 import com.application.repository.EquipmentRepository;
 import com.application.repository.RecipeRepository;
 import com.application.repository.UserRepository;
 import com.application.repository.CoffeeRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/user")
 public class UserHandler extends GenericHandler<User, UserRepository> {
     @Autowired
-    public UserHandler(UserRepository repository) {
+    private EquipmentRepository equipmentRepository;
+    @Autowired
+    private CoffeeRepository coffeeRepository;
+    @Autowired
+    private RecipeRepository recipeRepository;
+    @Autowired
+    private StatsHandler statsHandler;
+
+    @Autowired
+    public UserHandler(UserRepository repository, EntityManager em) {
         super(repository);
-    }
-    @Autowired EquipmentRepository equipmentRepository;
-    @Autowired CoffeeRepository coffeeRepository;
-    @Autowired RecipeRepository recipeRepository;
-
-    @RequestMapping("/getByEmail")
-    public ResponseEntity<List<User>> getByEmail(String email){
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
-
-        return new ResponseEntity<>(repository.findByEmail(email), HttpStatus.OK);
+        this.filter = new UserFilter(em);
     }
 
-    @RequestMapping("/login")
-    public ResponseEntity<User> login(String email, String password){
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
-
-        return new ResponseEntity<>(repository.login(email, password), HttpStatus.OK);
-    }
-
+    @Validated
     @PostMapping("/save")
     public ResponseEntity<User> save(@RequestBody User obj) {
         List<UUID> equipmentIds = obj.getEquipmentIds();
-        for(UUID equipmentId : equipmentIds) {
-            Optional<Equipment> equipment = equipmentRepository.findById(equipmentId);
-            if(equipment.isEmpty())
-                continue;
-            obj.addEquipment(equipment.get());
+        equipmentIds.forEach(equipmentId -> equipmentRepository.findById(equipmentId)
+                .ifPresentOrElse(
+                    equipment -> {obj.addEquipment(equipment);},
+                    () -> { throw new NotFoundException("Equipment not found"); }
+                ));
+        try {
+            User savedUser = repository.save(obj);
+            statsHandler.setUserListUpdated(true);
+            return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException("Constraint violation occurred");
         }
-        User savedUser = repository.save(obj);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
-
-        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
-    // acho q da pra fazer isso de forma mais geral
     @RequestMapping("/getCoffees")
-    public ResponseEntity<List<Coffee>> getCoffees(String id){
-        UUID formattedId = UUID.fromString(id);
-        Optional<User> user = repository.findById(formattedId);
-        if(user.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        List<UUID> coffeeIds = user.get().getCoffeesIds();
-        List<Coffee> coffees = new ArrayList<>();
-        coffeeRepository.findAllById(coffeeIds).forEach(coffees::add);
-        return new ResponseEntity<>(coffees, HttpStatus.OK);
-    }
+    public ResponseEntity<List<Coffee>> getCoffees(String id){ return handleRelatedEntities(id, User::getCoffeesIds, coffeeRepository::findAllById); }
 
     @RequestMapping("/getEquipments")
-    public ResponseEntity<List<Equipment>> getEquipments(String id){
-        UUID formattedId = UUID.fromString(id);
-        Optional<User> user = repository.findById(formattedId);
-        if(user.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        List<UUID> equipmentIds = user.get().getEquipmentIds();
-        List<Equipment> equipments = new ArrayList<>();
-        equipmentRepository.findAllById(equipmentIds).forEach(equipments::add);
-        return new ResponseEntity<>(equipments, HttpStatus.OK);
-    }
-
+    public ResponseEntity<List<Equipment>> getEquipments(String id){ return handleRelatedEntities(id, User::getEquipmentIds, equipmentRepository::findAllById); }
     @RequestMapping("/getRecipes")
-    public ResponseEntity<List<Recipe>> getRecipes(String id) {
+    public ResponseEntity<List<Recipe>> getRecipes(String id) { return handleRelatedEntities(id, User::getRecipesIds, recipeRepository::findAllById); }
+
+    private <T> ResponseEntity<List<T>> handleRelatedEntities(String id, IdGetter<UUID> idGetter, EntityFetcher<UUID, T> entityFetcher) {
         UUID formattedId = UUID.fromString(id);
-        Optional<User> user = repository.findById(formattedId);
-        if(user.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        List<UUID> recipeIds = user.get().getRecipesIds();
-        List<Recipe> recipes = new ArrayList<>();
-        recipeRepository.findAllById(recipeIds).forEach(recipes::add);
-        return new ResponseEntity<>(recipes, HttpStatus.OK);
+
+        User user = repository.findById(formattedId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        List<UUID> entityIds = idGetter.getIds(user);
+        List<T> entities = entityFetcher.fetchEntities(entityIds);
+
+        return new ResponseEntity<>(entities, HttpStatus.OK);
     }
 
+    @FunctionalInterface
+    private interface IdGetter<T> { List<T> getIds(User user); }
+
+    @FunctionalInterface
+    private interface EntityFetcher<T, R> { List<R> fetchEntities(List<T> entityIds); }
 }
