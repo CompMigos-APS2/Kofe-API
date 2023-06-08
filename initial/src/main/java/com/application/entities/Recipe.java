@@ -30,9 +30,9 @@ public class Recipe {
     private Date date;
     @Min(value = 0, message = "Rating must be greater than or equal to 0")
     @Max(value = 10, message = "Rating must be less than or equal to 10")
-    private float rating;
+    private int rating;
     private LocalDateTime modificationDateTime = LocalDateTime.now();
-    private List<String> commentsList;
+    private String comments;
     private List<UUID> coffeeIds = new ArrayList<>();
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -66,10 +66,10 @@ public class Recipe {
     public void setPreparationMethod(String preparationMethod) { this.preparationMethod = preparationMethod; }
     public Date getDate() { return date; }
     public void setDate(Date date) { this.date = date; }
-    public float getRating() { return rating; }
-    public void setRating(float rating) { this.rating = rating; }
-    public List<String> getCommentsList() { return commentsList; }
-    public void setCommentsList(List<String> commentsList) { this.commentsList = commentsList; }
+    public int getRating() { return rating; }
+    public void setRating(int rating) { this.rating = rating; }
+    public String getComments() { return comments; }
+    public void setComments(String comments) { this.comments = comments; }
     public List<UUID> getCoffeeIds() { return coffeeIds; }
     public void setCoffeeIds(List<UUID> coffeeIds) { this.coffeeIds = coffeeIds; }
     public String getTitle() { return title; }

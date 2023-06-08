@@ -10,6 +10,7 @@ import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +42,8 @@ public class CoffeeHandler extends GenericHandler<Coffee, CoffeeRepository> {
         repository.deleteById(id);
         return new ResponseEntity<>(recipeList, HttpStatus.NO_CONTENT);
     }
+
+    @Validated
     @PostMapping("/save")
     public ResponseEntity<Coffee> save(@RequestBody Coffee obj) {
         UUID userId = obj.getUserId();
