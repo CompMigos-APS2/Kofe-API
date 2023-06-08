@@ -34,7 +34,7 @@ public class Recipe {
     private Date date;
     @Min(value = 0, message = "Rating must be greater than or equal to 0")
     @Max(value = 10, message = "Rating must be less than or equal to 10")
-    private float rating;
+    private int rating;
     private LocalDateTime modificationDateTime = LocalDateTime.now();
     private List<String> commentsList;
     private List<UUID> coffeeIds = new ArrayList<>();
@@ -99,10 +99,10 @@ public class Recipe {
     public void setDate(Date date) {
         this.date = date;
     }
-    public float getRating() {
+    public int getRating() {
         return rating;
     }
-    public void setRating(float rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
     public List<String> getCommentsList() {
