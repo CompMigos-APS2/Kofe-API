@@ -6,7 +6,6 @@ import com.application.entities.User;
 import com.application.exceptions.NotFoundException;
 import com.application.filters.RecipeFilter;
 import com.application.repository.CoffeeRepository;
-
 import com.application.repository.EquipmentRepository;
 import com.application.repository.RecipeRepository;
 import com.application.repository.UserRepository;
