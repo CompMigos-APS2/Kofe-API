@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,30 +19,20 @@ import java.util.UUID;
 
 @RestController
 public class GenericHandler<T, TRepository extends JpaRepository<T, UUID>>{
-    public TRepository repository;
-
+    protected TRepository repository;
     @PersistenceContext
     protected EntityManager em;
-
     protected Filter filter;
     @Autowired
-    public GenericHandler(TRepository repository){
-        this.repository = repository;
-    }
+    public GenericHandler(TRepository repository){ this.repository = repository; }
 
-    public void setFilter(Filter filter){
-        this.filter = filter;
-    }
+    public void setFilter(Filter filter){ this.filter = filter; }
     @PostMapping("/get")
     public ResponseEntity<List<T>> get(@RequestBody String jsonReq) throws JsonProcessingException {
         return new ResponseEntity<>(em.createQuery(filter.buildQuery(jsonReq)).getResultList(), HttpStatus.OK);
     }
-
     @PostMapping("/save")
-    public ResponseEntity<T> save(@RequestBody T obj){
-        return new ResponseEntity<>(repository.save(obj), HttpStatus.CREATED);
-    }
-
+    public ResponseEntity<T> save(@RequestBody T obj){ return new ResponseEntity<>(repository.save(obj), HttpStatus.CREATED); }
     @PostMapping("/batchSave")
     public List<ResponseEntity<T>> batchSave(@RequestBody List<T> objList){
         List<ResponseEntity<T>> responses = new ArrayList<>();
@@ -52,14 +41,6 @@ public class GenericHandler<T, TRepository extends JpaRepository<T, UUID>>{
         }
         return responses;
     }
-
-    @RequestMapping("/getById")
-    public ResponseEntity<Optional<T>> getById(String id){
-        UUID formattedId = UUID.fromString(id);
-
-        return new ResponseEntity<>(repository.findById(formattedId), HttpStatus.OK);
-    }
-
     @RequestMapping("/deleteById")
     public ResponseEntity<HttpStatus> deleteById(String id){
         UUID formattedId = UUID.fromString(id);

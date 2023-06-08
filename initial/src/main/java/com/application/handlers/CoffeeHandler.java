@@ -1,7 +1,6 @@
 package com.application.handlers;
 
 import com.application.entities.Coffee;
-import com.application.entities.Stats;
 import com.application.entities.User;
 import com.application.exceptions.NotFoundException;
 import com.application.filters.CoffeeFilter;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -24,31 +22,31 @@ import java.util.UUID;
 public class CoffeeHandler extends GenericHandler<Coffee, CoffeeRepository> {
     @Autowired
     private UserRepository userRepository;
-    private StatsHandler statsHandler;
+    private final StatsHandler statsHandler;
+
     @Autowired
     public CoffeeHandler(CoffeeRepository repository, EntityManager em, StatsHandler sh) {
         super(repository);
         this.filter = new CoffeeFilter(em);
         this.statsHandler = sh;
     }
-    @RequestMapping("/deleteCoffeeById")
-    public ResponseEntity<List<Object>> deleteCoffeeById(String id) {
-        UUID formattedId = UUID.fromString(id);
-        List<Object> recipeList = repository.findRecipesWithCoffee(formattedId);
-        if(recipeList.size() == 0) {
-            repository.deleteById(formattedId);
-            return new ResponseEntity<>(recipeList, HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(recipeList, HttpStatus.CONFLICT);
-    }
 
+    @RequestMapping("/deleteCoffeeById")
+    public ResponseEntity<List<Object>> deleteCoffeeById(String idString) {
+        UUID id = UUID.fromString(idString);
+        List<Object> recipeList = repository.findRecipesWithCoffee(id);
+
+        if(recipeList.size() > 0) return new ResponseEntity<>(recipeList, HttpStatus.CONFLICT);
+
+        repository.deleteById(id);
+        return new ResponseEntity<>(recipeList, HttpStatus.NO_CONTENT);
+    }
     @PostMapping("/save")
     public ResponseEntity<Coffee> save(@RequestBody Coffee obj) {
         UUID userId = obj.getUserId();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
-        obj.setUserId(userId);
         Coffee savedCoffee = repository.save(obj);
 
         UUID coffeeId = savedCoffee.getId();
