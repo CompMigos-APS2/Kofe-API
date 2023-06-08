@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-
 import java.util.List;
 import java.util.UUID;
 
@@ -29,14 +27,19 @@ import java.util.UUID;
 @RequestMapping("/user")
 public class UserHandler extends GenericHandler<User, UserRepository> {
     @Autowired
+    private EquipmentRepository equipmentRepository;
+    @Autowired
+    private CoffeeRepository coffeeRepository;
+    @Autowired
+    private RecipeRepository recipeRepository;
+    @Autowired
+    private StatsHandler statsHandler;
+
+    @Autowired
     public UserHandler(UserRepository repository, EntityManager em) {
         super(repository);
         this.filter = new UserFilter(em);
     }
-    @Autowired EquipmentRepository equipmentRepository;
-    @Autowired CoffeeRepository coffeeRepository;
-    @Autowired RecipeRepository recipeRepository;
-    @Autowired StatsHandler statsHandler;
 
     @Validated
     @PostMapping("/save")
@@ -49,27 +52,19 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
                 ));
         try {
             User savedUser = repository.save(obj);
-            statsHandler.setUserUpdated(true);
+            statsHandler.setUserListUpdated(true);
             return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("Constraint violation occurred");
         }
     }
-
     @RequestMapping("/getCoffees")
-    public ResponseEntity<List<Coffee>> getCoffees(String id){
-        return handleRelatedEntities(id, User::getCoffeesIds, coffeeRepository::findAllById);
-    }
+    public ResponseEntity<List<Coffee>> getCoffees(String id){ return handleRelatedEntities(id, User::getCoffeesIds, coffeeRepository::findAllById); }
 
     @RequestMapping("/getEquipments")
-    public ResponseEntity<List<Equipment>> getEquipments(String id){
-        return handleRelatedEntities(id, User::getEquipmentIds, equipmentRepository::findAllById);
-    }
-
+    public ResponseEntity<List<Equipment>> getEquipments(String id){ return handleRelatedEntities(id, User::getEquipmentIds, equipmentRepository::findAllById); }
     @RequestMapping("/getRecipes")
-    public ResponseEntity<List<Recipe>> getRecipes(String id) {
-        return handleRelatedEntities(id, User::getRecipesIds, recipeRepository::findAllById);
-    }
+    public ResponseEntity<List<Recipe>> getRecipes(String id) { return handleRelatedEntities(id, User::getRecipesIds, recipeRepository::findAllById); }
 
     private <T> ResponseEntity<List<T>> handleRelatedEntities(String id, IdGetter<UUID> idGetter, EntityFetcher<UUID, T> entityFetcher) {
         UUID formattedId = UUID.fromString(id);
@@ -84,13 +79,8 @@ public class UserHandler extends GenericHandler<User, UserRepository> {
     }
 
     @FunctionalInterface
-    private interface IdGetter<T> {
-        List<T> getIds(User user);
-    }
+    private interface IdGetter<T> { List<T> getIds(User user); }
 
     @FunctionalInterface
-    private interface EntityFetcher<T, R> {
-        List<R> fetchEntities(List<T> entityIds);
-    }
-
+    private interface EntityFetcher<T, R> { List<R> fetchEntities(List<T> entityIds); }
 }

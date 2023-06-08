@@ -7,27 +7,26 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
 
 @Component("EquipmentFilter")
 public class EquipmentFilter implements Filter<Equipment> {
-    private EntityManager em;
+    private final EntityManager em;
+
     public EquipmentFilter(EntityManager em){
         this.em = em;
     }
 
     @Override
     public CriteriaQuery<Equipment> buildQuery(String req) throws JsonProcessingException {
-        System.out.println(req);
         ObjectMapper mapper = new ObjectMapper();
         Equipment filterObj = mapper.readValue(req, Equipment.class);
+        List<Predicate> predicates = new ArrayList<>();
 
         var qb = em.getCriteriaBuilder();
         var query = qb.createQuery(Equipment.class);
         var root = query.from(Equipment.class);
-        List<Predicate> predicates = new ArrayList<>();
 
         if(filterObj.getInternalId() != null) predicates.add(qb.equal(root.get("id"), filterObj.getInternalId()));
         if(filterObj.getBrand() != null) predicates.add(qb.equal(root.get("brand"), filterObj.getBrand()));

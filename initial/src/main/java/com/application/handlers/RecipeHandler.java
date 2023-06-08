@@ -33,6 +33,9 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private StatsHandler statsHandler;
+
+    @Autowired
     public RecipeHandler(RecipeRepository repository, RecipeFilter filter, EntityManager em) {
         super(repository);
         this.filter = new RecipeFilter(em);
@@ -44,7 +47,6 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
-        obj.setUserId(userId);
 
         obj.getCoffeeIds().forEach(coffeeId -> coffeeRepository.findById(coffeeId)
                 .ifPresentOrElse(
@@ -60,6 +62,8 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
         Recipe savedRecipe = repository.save(obj);
 
         user.updateRecipesIds(savedRecipe.getId());
+
+        statsHandler.setUserUpdated(userId);
         userRepository.save(user);
 
         return new ResponseEntity<>(savedRecipe, HttpStatus.CREATED);

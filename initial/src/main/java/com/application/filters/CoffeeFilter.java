@@ -7,26 +7,26 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class CoffeeFilter implements Filter<Coffee> {
-    private EntityManager em;
+    private final EntityManager em;
 
     public CoffeeFilter(EntityManager em){
         this.em = em;
     }
+
     @Override
     public CriteriaQuery<Coffee> buildQuery(String req) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Coffee filterObj = mapper.readValue(req, Coffee.class);
+        List<Predicate> predicates = new ArrayList<>();
 
         var qb = em.getCriteriaBuilder();
         var query = qb.createQuery(Coffee.class);
         var root = query.from(Coffee.class);
-        List<Predicate> predicates = new ArrayList<>();
 
         if(filterObj.getName() != null) predicates.add(qb.equal(root.get("name"), filterObj.getName()));
         if(filterObj.getInternalId() != null) predicates.add(qb.equal(root.get("id"), filterObj.getInternalId()));
