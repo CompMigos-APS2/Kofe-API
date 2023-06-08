@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -46,10 +45,10 @@ public class StatsHandler {
             monitoredAccounts.put(user.getId(), stats);
         }
     }
+
     @RequestMapping("/get")
-    public ResponseEntity<Stats> get(String id){
-        return new ResponseEntity<>(monitoredAccounts.get(UUID.fromString(id)), HttpStatus.ACCEPTED);
-    }
+    public ResponseEntity<Stats> get(String id){ return new ResponseEntity<>(monitoredAccounts.get(UUID.fromString(id)), HttpStatus.ACCEPTED); }
+
     @Scheduled(fixedRate = 5000)
     private void calculate(){
         monitoredAccounts.forEach((key, value) -> {
@@ -59,7 +58,6 @@ public class StatsHandler {
             value.setUpdateFlag(false);
         });
     }
-
     @Scheduled(fixedRate = 1000)
     private void pollUsers(){
         if(!hasToUpdateUserList) return;

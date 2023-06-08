@@ -16,6 +16,4 @@ public class EquipmentHandler extends GenericHandler<Equipment, EquipmentReposit
         super(repository);
         this.filter = new EquipmentFilter(em);
     }
-
 }
-
