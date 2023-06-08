@@ -47,7 +47,10 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
         obj.setUserId(userId);
 
         obj.getCoffeeIds().forEach(coffeeId -> coffeeRepository.findById(coffeeId)
-                .ifPresent(obj::addCoffeeUsed));
+                .ifPresentOrElse(
+                    obj::addCoffeeUsed,
+                    () -> { throw new NotFoundException("Coffee not found"); }
+                ));
         obj.getEquipmentIds().forEach(equipmentId -> equipmentRepository.findById(equipmentId)
                 .ifPresent(obj::addEquipmentUsed));
 
