@@ -67,5 +67,4 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
 
         return new ResponseEntity<>(savedRecipe, HttpStatus.CREATED);
     }
-
 }
