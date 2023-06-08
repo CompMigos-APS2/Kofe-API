@@ -52,7 +52,10 @@ public class RecipeHandler extends GenericHandler<Recipe, RecipeRepository> {
                     () -> { throw new NotFoundException("Coffee not found"); }
                 ));
         obj.getEquipmentIds().forEach(equipmentId -> equipmentRepository.findById(equipmentId)
-                .ifPresent(obj::addEquipmentUsed));
+                .ifPresentOrElse(
+                    obj::addEquipmentUsed,
+                    () -> { throw new NotFoundException("Equipment not found"); }
+                ));
 
         Recipe savedRecipe = repository.save(obj);
 
